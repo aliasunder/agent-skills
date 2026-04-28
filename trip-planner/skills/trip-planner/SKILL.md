@@ -43,7 +43,7 @@ When a session begins (or when this skill first activates):
 
 1. **Read CLAUDE.md** — current phase, last session pointer, open questions, preferences.
 2. **Read TASKS.md** — what's active, blocked, next, and done. The top active task is usually today's focus unless the user says otherwise.
-3. **Read the last session log** — follow the pointer in CLAUDE.md to `memory/sessions/session-log-*.md` for handoff context.
+3. **Read the last session log** — follow the "Last Session" pointer in CLAUDE.md to `memory/sessions/YYYY-MM-DD-session-log-{letter}.md` for handoff context.
 4. **Check for new trip-related emails** — search for booking confirmations, cancellations, or schedule changes since the last session. Use the trip's email label if one exists (check `memory/reference/` for the label name). Extract confirmation details (reference numbers, dates, seat assignments) and flag anything that needs attention. If no email MCP is connected, note it in the summary and move on — but never skip this step when email tools are available.
 5. **Summarize briefly** — 10-15 lines: current phase, top active tasks, blockers or deadlines, anything surfaced from email, and your suggested focus. Ask the user if they want to go with that or redirect.
 
@@ -53,7 +53,11 @@ Keep the summary conversational — a quick refresh, not a briefing document.
 
 When the user signals they're done:
 
-1. **Write a session log** to `memory/sessions/session-log-{date}-{sequence}.md`:
+1. **Write a session log** to `memory/sessions/YYYY-MM-DD-session-log-{letter}.md` (e.g., `2026-04-28-session-log-a.md`; subsequent same-day sessions increment to `-b`, `-c`, etc.):
+
+   If the project's CLAUDE.md specifies a session log frontmatter convention (e.g., for Obsidian or another tool), follow it. Otherwise, start with a markdown heading (`# Session Log — YYYY-MM-DD (a)`).
+
+   Required sections:
    - **Summary**: 2-3 sentences
    - **Changes Made**: Bullet list of files created/modified
    - **Key Decisions**: What was decided and why (most important section)
@@ -80,7 +84,7 @@ A trip moves through these phases roughly in order. The phases aren't rigid gate
 ### Phase 1: Define
 **What:** Establish who's traveling, when, budget, constraints, and trip style.
 **Depends on:** Nothing — this is the starting point.
-**Key outputs:** Traveler profiles in `memory/people/`, project file in `memory/projects/`, CLAUDE.md, TASKS.md, dashboard.html.
+**Key outputs:** Traveler profiles in `memory/people/`, project file in `memory/projects/`, CLAUDE.md, TASKS.md, dashboard.html (if using bundled dashboard).
 **Done when:** You have enough information to start exploring destinations.
 
 **Gather these project-wide conventions** (store in CLAUDE.md under Preferences — don't hardcode assumptions):
@@ -247,7 +251,7 @@ If no CLAUDE.md exists:
    ```
    CLAUDE.md          — Agent working memory
    TASKS.md           — Active task tracker — start here each session (see references/tasks-and-dashboard.md for format)
-   dashboard.html     — Visual task/memory dashboard (copy from Productivity plugin if available)
+   dashboard.html     — Visual task/memory dashboard (only if using bundled dashboard — see step 3)
    memory/
      people/          — Traveler profiles
      projects/        — Trip project file
@@ -264,7 +268,12 @@ If no CLAUDE.md exists:
    archive/           — Superseded options and old research
    ```
 
-3. **Set up the dashboard** — copy `assets/dashboard.html` to the project root, then read `references/tasks-and-dashboard.md` for TASKS.md format. The dashboard is a standalone visual kanban board — no other plugins required.
+3. **Detect task management tool** — ask the user how they prefer to manage tasks:
+
+   - **Bundled dashboard** (default) — copy `assets/dashboard.html` to the project root. TASKS.md uses plain markdown sections (`## Active`, `## Done`, etc.).
+   - **Own tool** — the user already has a task/kanban tool (e.g., an Obsidian plugin, a VS Code extension, a standalone app). Skip `dashboard.html`. Ask the user if TASKS.md needs any special formatting for their tool — if so, format it accordingly; otherwise use plain markdown sections.
+
+   Store the choice in CLAUDE.md under `Preferences` (e.g., `Task management: Obsidian Kanban`, `Task management: bundled dashboard`). Read `references/tasks-and-dashboard.md` for the default TASKS.md format.
 
 4. **Create files following the file boundary rules** (see "File Conventions → What Goes Where" below):
    - **Traveler profiles** in `memory/people/` — full detail on each person
@@ -389,5 +398,5 @@ The single source of truth for what happens each day: accommodation, transport, 
 **Naming conventions:**
 - Research: `memory/research/{topic}-{city}.md` (e.g., `restaurant-kyoto.md`, `hotel-paris.md`, `flight-outbound.md`)
 - Guides: `memory/guides/{city}-{type}.md` (e.g., `paris-activities.md`, `avignon-restaurants.md`)
-- Session logs: `memory/sessions/session-log-{date}-{sequence}.md`
+- Session logs: `memory/sessions/YYYY-MM-DD-session-log-{letter}.md` (e.g., `2026-04-28-session-log-a.md`)
 - Outputs: Descriptive names in `outputs/`

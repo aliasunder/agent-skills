@@ -78,11 +78,15 @@ When the last subtask of a parent task is completed, close the parent task immed
   - [x] ~~Venice~~ (2026-03-26)
 ```
 
-## Dashboard Setup
+## Task Management Tool Detection
+
+During project scaffolding, ask the user which tool they prefer for managing tasks. The answer determines whether `dashboard.html` is included and how TASKS.md is formatted.
+
+### Option 1: Bundled Dashboard (default)
 
 The trip-planner plugin bundles a `dashboard.html` — a visual kanban board for TASKS.md with a memory browser. It's a standalone single-file app with no external dependencies.
 
-**During project scaffolding (`new-trip` command):**
+**Setup:**
 1. Copy `dashboard.html` from the plugin's `assets/` directory to the project's root directory
 2. The dashboard reads and writes to `TASKS.md` and `memory/` in the same directory
 3. It auto-saves changes and watches for external edits
@@ -90,7 +94,13 @@ The trip-planner plugin bundles a `dashboard.html` — a visual kanban board for
 
 Tell the user: "The dashboard is ready at `dashboard.html` — open it from your file browser to see your tasks and memory visually."
 
-The dashboard gives trip planners a pleasant visual way to track progress across sessions without needing any other plugins installed.
+TASKS.md uses plain markdown sections (the template above).
+
+### Option 2: Own Tool
+
+The user already has a task/kanban tool they prefer. Skip `dashboard.html` entirely. Ask the user if TASKS.md needs any special formatting for their tool (e.g., specific frontmatter, section naming, or metadata syntax). If so, format it accordingly; otherwise use plain markdown sections from the template above.
+
+Store the choice in CLAUDE.md under Preferences (e.g., `Task management: Obsidian Kanban`, `Task management: Linear`, `Task management: plain markdown`).
 
 ## Task Conventions for Trip Planning
 
