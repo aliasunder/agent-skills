@@ -1,6 +1,6 @@
 {
   "name": "trip-planner",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Plan a multi-week trip with Claude that actually remembers everything between sessions. Systematic research, budget tracking, printable daily cards, and real deliverables — from first idea to departure day.",
   "author": {
     "name": "aliasunder"

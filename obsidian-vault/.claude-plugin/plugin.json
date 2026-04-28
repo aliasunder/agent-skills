@@ -1,6 +1,6 @@
 {
   "name": "obsidian-vault",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Claude that works with Obsidian, not just in it. Detects your vault's conventions, understands how Dataview, Tasks, Kanban, Meta Bind, and Templater interact, and creates or edits notes that are connected, queryable, and safe.",
   "author": {
     "name": "aliasunder"
