@@ -18,7 +18,7 @@ values for that property across all notes.
 | **Number** | `key: 4.5` | Unquoted — quoting makes it text |
 | **Checkbox** | `key: true` or `key: false` | Lowercase only — `True` / `False` are treated as text |
 | **Date** | `key: 2025-01-15` | ISO 8601 date only |
-| **Date & time** | `key: 2025-01-15T14:30:00` | ISO 8601 with time |
+| **Date & time** | `key: 2025-01-15T14:30:00` or `key: 2025-01-15T14:30:00-05:00` | ISO 8601 with time; timezone offset optional but recommended |
 | **List** | YAML list (see below) | Multi-value property |
 | **Link** | `key: "[[Note Name]]"` | Always quote wikilinks in properties |
 
@@ -86,7 +86,7 @@ title: Project Name
 status: active           # active | paused | complete | archived
 priority: high           # high | medium | low
 due: 2025-03-01
-created: 2025-01-10
+created: 2025-01-10                  # or 2025-01-10T09:00:00-05:00 for full datetime with TZ
 tags:
   - project
 ---
@@ -169,6 +169,19 @@ title: "My Note: A Subtitle"    ✓
 summary: |
   First line of summary.
   Second line of summary.
+```
+
+**Numeric-only tags are invalid:**
+```yaml
+tags:
+  - 2025                            ✗  Obsidian rejects purely numeric tags
+  - "2025"                          ✗  quoting doesn't help — still rejected
+```
+Use a separate frontmatter property for numeric values that tags can't hold:
+```yaml
+year: "2025"                        ✓  text property for the year
+tags:
+  - project                         ✓  descriptive tag
 ```
 
 ---

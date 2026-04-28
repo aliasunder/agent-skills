@@ -51,6 +51,24 @@ created (➕), done (✅), and cancelled (❌) dates. Check the vault's Tasks
 settings to see which are enabled. If auto-set is on, do not manually add
 these emojis when creating tasks — the plugin will insert them.
 
+**Tool-aware date handling:** How dates behave depends on which tool performs
+the action:
+
+| Action | Tool | Date behavior |
+|---|---|---|
+| Creating a task | Plugin modal / auto-suggest | Auto-adds ➕ if `setCreatedDate` is on |
+| Creating a task | Direct file write (agent, editor) | No auto-date — add ➕ manually if wanted |
+| Completing a task | Checkbox toggle in reading view | Auto-adds ✅ if `setDoneDate` is on |
+| Completing a task | `obsidian task done path= line=` CLI | Auto-adds ✅ if `setDoneDate` is on |
+| Completing a task | Direct file edit (agent moves to Done lane) | No auto-date — add ✅ manually |
+| Cancelling a task | Status toggle to `[-]` in reading view | Auto-adds ❌ if `setCancelledDate` is on |
+| Cancelling a task | Direct file edit (agent writes `[-]`) | No auto-date — add ❌ manually |
+
+**Bottom line for agents:** When writing tasks directly to files, always
+include the emoji dates you want — the plugin won't add them for you. When
+the user will interact with the task through Obsidian's UI, check the
+auto-set settings to avoid duplicates.
+
 ### Priority Emojis
 
 | Emoji | Priority | Sort order |
@@ -334,15 +352,34 @@ causes duplicate dates.
    be parsed by the Tasks plugin.
 2. **Wrong date format** — `📅 01/02/2025` or `📅 February 1` won't parse.
    Always use `📅 YYYY-MM-DD`.
-3. **Double-creating auto dates** — If `setCreatedDate` is enabled, writing
-   `- [ ] Task ➕ 2025-01-28` creates a task that then gets a SECOND created
-   date appended. Check settings before manually adding ➕, ✅, or ❌.
+3. **When auto-set dates fire (and when they don't)** — `setCreatedDate`,
+   `setDoneDate`, and `setCancelledDate` only trigger through the Tasks
+   plugin's own UI: the task creation modal, checkbox toggle in reading
+   view, or the Obsidian CLI `obsidian task done` command. **Direct file
+   writes do not trigger auto-set dates** — whether by an agent, a text
+   editor, or another plugin. This means agents can safely write emoji
+   dates (➕, ✅, ❌) directly to files without causing duplicates. If
+   auto-set dates are enabled and the user completes tasks through the
+   plugin UI, the plugin adds the date — so agents should not add ✅ or
+   ❌ dates when the task will be completed through the UI. But when
+   agents are writing completed tasks directly to files (e.g., moving a
+   card to Done in a Kanban board), they should include the emoji dates
+   themselves because the plugin won't auto-add them.
 4. **Unconfigured custom statuses** — Writing `- [/] In Progress` in a vault
    that hasn't configured the `/` status means Tasks treats it as a plain
    checkbox, not a custom status. Always check Tasks settings → Status Settings.
-5. **Emoji ordering** — While the Tasks plugin is generally flexible about emoji
-   order, keeping a consistent order improves readability. Recommended:
-   description → priority → recurrence → dates (start → scheduled → due).
+5. **Emoji ordering is a hard parsing rule** — The Tasks plugin reads
+   backward from the end of the line to parse emoji fields. As soon as it
+   encounters unrecognized text, it stops and ignores any emojis to the
+   left. This means:
+   - All emoji metadata MUST appear at the end of the task description,
+     with no non-emoji text after them
+   - `- [ ] Fix bug 📅 2025-02-01 some note` — the trailing text causes
+     `📅` to be ignored
+   - `- [ ] Fix bug ⏫ 📅 2025-02-01` ✓ — priority then date, both parsed
+   - Recommended order: description text → priority → recurrence → created
+     → start → scheduled → due → done/cancelled (but the key rule is: no
+     non-emoji text after the first emoji field)
 6. **Recurrence with custom statuses** — Completing a recurring task resets to
    the start of the status cycle, not the current status. A recurring `[/]`
    that's toggled to `[x]` creates a new `[ ]`, not a new `[/]`.

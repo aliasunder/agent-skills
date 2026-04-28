@@ -30,7 +30,7 @@ Obsidian expects that type everywhere.
 | Number | `key: 4.5` | Unquoted — quoting makes it text |
 | Checkbox | `key: true` / `key: false` | Lowercase only |
 | Date | `key: 2025-01-15` | ISO 8601 date |
-| Date & time | `key: 2025-01-15T14:30:00` | ISO 8601 with time |
+| Date & time | `key: 2025-01-15T14:30:00` or `key: 2025-01-15T14:30:00-05:00` | ISO 8601 with time; timezone offset optional but recommended for cross-device consistency |
 | List | YAML list | Multi-value property |
 | Link | `key: "[[Note]]"` | Must be quoted |
 
@@ -68,7 +68,10 @@ These have special meaning in Obsidian core:
 | `permalink` | Text | Obsidian Publish — custom URL slug |
 
 **Rules:**
-- `tags` — always a list, bare strings (no `#` prefix), nested with `/`
+- `tags` — always a list, bare strings (no `#` prefix), nested with `/`.
+  **Numeric-only tags are invalid** — Obsidian rejects tags that are purely
+  numbers (e.g., `2025`), even when quoted in YAML. Use a separate
+  frontmatter property instead (e.g., `year: "2025"`).
 - `aliases` — always a list, plain strings (not wikilinks)
 - `cssclasses` — always a list, each item is a CSS class name
 
@@ -103,6 +106,13 @@ Creates one note per day with a consistent naming format and template.
   (ISO 8601 works best).
 - **Link to daily notes:** Some plugins (e.g., Kanban with `link-date-to-daily-note`)
   create wikilinks to daily notes using the date format. Ensure consistency.
+- **Plugin-managed daily notes:** Some community plugins (like
+  `obsidian-list-modified`) automatically maintain sections within daily
+  notes — e.g., logging files created, modified, or deleted that day. If
+  such a plugin is active, **agents should not write directly to daily
+  notes** to avoid races or content conflicts with the plugin. Check the
+  vault's installed plugins and ask the user about daily note ownership
+  before writing to them.
 
 ### Interaction with Templater
 
@@ -177,6 +187,10 @@ Bases is **strict about property types** — stricter than Dataview:
 **Agent rule:** When writing notes that will appear in a Bases view, ensure
 every property matches the expected type exactly. Test by checking existing
 notes in the same source folder.
+
+**Inline field limitation:** Bases only reads YAML frontmatter properties.
+Dataview inline fields (`field:: value` in the note body) are invisible to
+Bases. If data needs to appear in a Bases view, it must be in frontmatter.
 
 ### Bases Formulas
 

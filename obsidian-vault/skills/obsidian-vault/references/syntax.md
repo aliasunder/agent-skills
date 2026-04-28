@@ -75,10 +75,20 @@ For lists, tables, and blockquotes, place the ID on the line immediately after:
 
 **Notes:**
 - Heading links are case-insensitive but should match exactly
-- If a note is renamed, Obsidian updates wikilinks automatically — never
-  hard-code paths in wikilinks unless needed for disambiguation
-- For notes with identical names in different folders, use the folder path:
-  `[[folder/Note Name]]`
+- If a note is renamed via Obsidian (app, CLI, or REST API), Obsidian
+  updates wikilinks automatically — this is true for all `newLinkFormat`
+  options
+- Path style depends on the vault's `newLinkFormat` setting in
+  `.obsidian/app.json`:
+  - `"shortest"` (default) — bare note name, no path: `[[Note Name]]`.
+    Obsidian resolves by searching the vault. Ambiguous if two notes share
+    a name.
+  - `"relative"` — path relative to the current note's folder:
+    `[[../folder/Note Name]]`
+  - `"absolute"` — full path from vault root: `[[folder/subfolder/Note Name]]`.
+    Unambiguous, agent-friendly (path doubles as a file-system read target).
+  - Detect the vault's setting before writing links. If mixed styles exist,
+    ask the user which convention to follow.
 
 ---
 
@@ -179,3 +189,43 @@ Links as: `[[Note#my-heading-title]]`
 
 For headings with special characters, test the anchor in Obsidian's link
 autocomplete rather than guessing.
+
+### Markdown Links and Heading Anchors
+
+**Limitation:** Standard markdown links (`[text](file.md#heading)`) support
+heading anchors, but Obsidian's rendering of heading anchors in markdown
+links can be inconsistent compared to wikilinks. Wikilinks (`[[Note#Heading]]`)
+are the more reliable format for heading-level linking.
+
+### Wikilinks in Frontmatter
+
+Wikilinks inside YAML frontmatter values **must be quoted** — unquoted
+wikilinks break YAML parsing because `[` and `]` are YAML list syntax:
+
+```yaml
+related: "[[Other Note]]"           ✓  quoted — parsed correctly
+related: [[Other Note]]             ✗  unquoted — YAML parse error
+related:
+  - "[[Note A]]"                    ✓  list of quoted wikilinks
+  - "[[Note B]]"
+```
+
+This applies to all property values that contain wikilinks, not just
+`related:`. The quotes are consumed by the YAML parser — Obsidian sees the
+wikilink without quotes.
+
+### Wikilinks and Spaces
+
+Wikilinks handle spaces in note names and paths natively — no URL-encoding
+or escaping needed:
+
+```markdown
+[[My Long Note Name]]                ✓  spaces are fine
+[[folder/My Note#My Heading]]        ✓  spaces in path and heading
+```
+
+Markdown links require standard URL encoding for spaces in paths:
+```markdown
+[text](My%20Long%20Note%20Name.md)   ✓  URL-encoded spaces
+[text](My Long Note Name.md)         ⚠  may work in Obsidian but not portable
+```

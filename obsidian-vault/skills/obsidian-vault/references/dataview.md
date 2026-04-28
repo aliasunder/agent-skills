@@ -77,6 +77,11 @@ This will not show the (longKeyIDontNeedWhenReading:: key).
 - Formatting tokens in keys (`**bold**`, `_italic_`) are stripped during
   indexing — query without them
 
+**Override behavior for standalone fields:** If the same field name appears
+as a standalone (full-line) inline field multiple times in a note, **the
+last occurrence wins** — earlier values are silently overwritten. This is
+different from list-item inline fields, which accumulate into a list.
+
 ### 3. Implicit Fields
 
 Dataview provides metadata automatically without explicit annotation:
@@ -315,7 +320,7 @@ These plugins both query tasks but work differently:
 | Filtering by due date | Must parse text manually | Built-in `due before`, `due after` |
 | Completion tracking | Via `completed` implicit field | Via plugin's own tracking |
 | Grouping/sorting | Full DQL expressions | Limited to built-in filters |
-| Rendering | Read-only list (no inline toggle) | Interactive toggles |
+| Rendering | Interactive checkboxes if `taskCompletionTracking` is on (default); read-only if off | Interactive toggles (plugin's own tracking) |
 
 **Recommendation:** Use Tasks plugin queries (`` ```tasks ```) for filtering
 by dates, priority, and recurrence. Use Dataview TASK queries for aggregating
@@ -334,6 +339,9 @@ Both read frontmatter. Bases is stricter about types:
 - When designing schemas for folders that both Dataview and Bases will query,
   define types upfront and enforce with templates.
 - Bases property names may be case-sensitive (unlike Dataview).
+- **Bases ignores Dataview inline fields entirely.** Bases only reads YAML
+  frontmatter properties — not `field:: value` inline fields. If data needs
+  to appear in both Dataview queries and Bases views, put it in frontmatter.
 
 ### Dataview ↔ Meta Bind
 

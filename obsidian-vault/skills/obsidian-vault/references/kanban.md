@@ -67,8 +67,10 @@ kanban-plugin: board       # Standard board view
 ```
 
 The `board` value is the current standard. Older boards may use `basic`.
-Do not add other frontmatter properties unless the user requests it — the
-Kanban plugin only reads `kanban-plugin`.
+The Kanban plugin only reads `kanban-plugin` from frontmatter, but other
+properties (like `tags`, `aliases`, or custom metadata) can coexist safely.
+Adding `tags:` to a Kanban board file does not break the board — the plugin
+ignores properties it doesn't recognize.
 
 ---
 
@@ -167,10 +169,14 @@ appended:
 - [x] Old task @{2025-01-15}
 ```
 
-### Empty Lines Between Lanes
+### Blank Lines Between Lanes
 
-The Kanban plugin expects **two blank lines** between the last card of one lane
-and the next lane heading. This is important when programmatically editing:
+The Kanban plugin expects **at least one blank line** between the last card of
+one lane and the next `##` lane heading. Some boards use two blank lines
+(the plugin's own serializer tends to add two), but one is sufficient for
+correct rendering. The critical rule: do not place a `##` heading immediately
+after a card line with no blank line between them — this can cause the board
+to misrender or merge lanes.
 
 ```markdown
 ## Lane One
@@ -183,7 +189,9 @@ and the next lane heading. This is important when programmatically editing:
 - [ ] Another card
 ```
 
-Removing these blank lines can cause the board to render incorrectly.
+Removing ALL blank lines between a card and the next lane heading can cause
+the board to merge lanes or misrender. When in doubt, preserve whatever
+spacing the board already uses.
 
 ---
 
@@ -209,7 +217,7 @@ Common settings keys:
 | `kanban-plugin` | String | Board type (`"board"`) |
 | `show-checkboxes` | Boolean | Whether to show checkboxes on cards |
 | `link-date-to-daily-note` | Boolean | Whether dates link to daily notes |
-| `move-dates` | Boolean | Whether to move dates when cards are moved |
+| `move-task-metadata` | Boolean | Whether to update task metadata (dates) when cards are dragged between lanes. Some older boards may use `move-dates` instead — preserve whichever key the board already has. |
 | `new-note-folder` | String | Folder for notes created from cards |
 | `lane-width` | Number | Width of lanes in pixels |
 | `show-relative-date` | Boolean | Show relative dates (e.g., "in 3 days") |
@@ -238,8 +246,8 @@ When programmatically editing a Kanban board file:
   sub-headings)
 - Use `###` or deeper headings inside the board (the plugin only uses `##`)
 - Remove the blank lines between the last card and the next lane heading
-- Add YAML frontmatter properties other than `kanban-plugin` unless the user
-  specifically requests it
+- Remove the `kanban-plugin` frontmatter key (other properties like `tags`
+  are safe to add alongside it)
 
 ### Moving Cards Between Lanes
 
@@ -304,6 +312,45 @@ Meta Bind INPUT fields placed in a Kanban board file may not render correctly
 in the board view (the board renders its own UI, not standard markdown). Avoid
 placing Meta Bind syntax inside Kanban boards.
 
+### Agent Limitations for Column Moves
+
+The Obsidian CLI can toggle a task checkbox (`obsidian task done path=
+line=N`) and trigger Tasks plugin auto-dates, but it **cannot move a line
+between `##` sections** — that requires a direct file edit. This means:
+
+- **Completing a task by moving it to a Done lane** requires an Edit tool
+  operation: remove the line from the source lane, add it under the target
+  lane heading, and change `[ ]` to `[x]` if appropriate
+- If the Tasks plugin's `setDoneDate` is enabled, the CLI toggle adds `✅`
+  automatically — but the card stays in its current lane
+- For full "move to Done + mark complete + add date", agents should do a
+  direct file edit with all three changes in one pass
+
+### New Note from Card
+
+The Kanban plugin supports creating a linked note from a card via its
+context menu ("New note from card"). The destination folder is set by the
+`new-note-folder` setting in the board's settings block. When agents need
+to split a verbose card into a card + linked note:
+
+1. Create the detail note in the configured `new-note-folder` path
+2. Replace the card's verbose content with a terse summary + a link to the
+   detail note
+3. Preserve any emoji metadata, block IDs, and checkbox state on the card
+
+### Block IDs on Cards
+
+Cards can have block IDs (`^card-id`) that make them linkable from other
+notes:
+
+```markdown
+- [ ] Important task ^task-123
+```
+
+Block IDs are placed at the end of the card line (after any emoji metadata).
+When editing cards, always preserve existing block IDs — other notes may
+reference them with `[[Board#^task-123]]`.
+
 ---
 
 ## Common Pitfalls
@@ -318,9 +365,9 @@ placing Meta Bind syntax inside Kanban boards.
    The plugin only uses `##` for lanes.
 4. **Mixed content** — Adding paragraphs, images, or code blocks between
    lanes (not as card content) confuses the board renderer.
-5. **Frontmatter additions** — Adding properties beyond `kanban-plugin` to
-   the frontmatter can interfere with the plugin's file detection. Some users
-   do add properties (tags, aliases) successfully, but test before relying
-   on it.
+5. **Frontmatter assumptions** — The Kanban plugin only reads `kanban-plugin`
+   from frontmatter. Other properties (`tags`, `aliases`, custom keys) are
+   safe — the plugin ignores them. Do not remove `kanban-plugin: board` or
+   the board view breaks.
 6. **Card indentation** — Sub-items must be indented with a tab or consistent
    spaces. Inconsistent indentation orphans sub-items.

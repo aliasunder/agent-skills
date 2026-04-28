@@ -76,6 +76,12 @@ upfront.
   templates, JavaScript in templates, core Templates vs Templater. **Read
   before creating or editing template files.**
 
+### Vault access tools
+- `references/vault-tools.md` — Three tool tiers for interacting with vaults
+  (direct file ops, Obsidian CLI, MCP tools), environment detection, and a
+  decision matrix for which tool to use when. **Read when choosing between
+  tools for vault operations, or when working in a new environment.**
+
 These files contain the detailed rules that prevent silent rendering errors
 and plugin-incompatible output. Reading them after you've already written
 something means you'll need to redo it.
@@ -108,6 +114,14 @@ something means you'll need to redo it.
    in the vault — link style, frontmatter schema, task format, tag placement,
    date format — check whether it's intentional and persist the finding.
    See "Convention Detection" below.
+8. **Look things up before guessing.** When you encounter unfamiliar Obsidian
+   syntax, a plugin feature you're not sure about, or a convention that
+   could go multiple ways, proactively consult official documentation and
+   community best practices. Fetch the relevant plugin's published docs
+   (linked at the top of each reference file), search for community
+   conventions, and verify your understanding before writing. Don't assume
+   default behavior — plugin settings change it, and vaults diverge from
+   defaults frequently.
 
 ---
 
@@ -123,12 +137,24 @@ assumes defaults will break things.
 When this skill activates in a vault for the first time (no prior convention
 record exists), detect and confirm these conventions before writing anything:
 
-**1. Link convention:**
-- Check `.obsidian/app.json` for `useMarkdownLinks` (true = markdown links,
-  false/absent = wikilinks)
-- Verify by reading 2-3 existing notes to confirm actual usage
-- If mixed, ask the user which convention to follow
-- Persist the choice
+**1. Link convention — understand the approach, not just the syntax:**
+- Check `.obsidian/app.json` for two settings:
+  - `useMarkdownLinks` (true = markdown links, false/absent = wikilinks)
+  - `newLinkFormat` (`"shortest"` = bare name, `"relative"` = relative path,
+    `"absolute"` = full path from vault root). Default is `"shortest"`.
+- Read 3-5 existing notes to confirm actual usage matches the settings. Look
+  for patterns beyond syntax: Do links use aliases consistently? Are paths
+  included even when `shortest` is the setting? Is there a display-name
+  convention (e.g., `[[folder/Note|Note]]` for cleaner reading view)?
+- Check frontmatter for link properties (`related:`, `parent:`, etc.) — are
+  wikilinks quoted? Are they using aliases?
+- Look for bidirectional `related:` linking — when note A lists note B in
+  `related:`, does note B reciprocate? If this is a convention, persist it
+  and follow it on all new links.
+- If mixed styles exist, ask the user which convention to follow going
+  forward and whether to migrate existing links
+- Persist the full picture: link type, path format, alias convention,
+  bidirectional linking expectation
 
 **2. Frontmatter schema:**
 - Read 3-5 representative notes to identify common property names and types
@@ -146,11 +172,20 @@ record exists), detect and confirm these conventions before writing anything:
 - Look at existing tasks in the vault to confirm format in use
 - Persist relevant settings
 
-**4. Tag convention:**
+**4. Tag convention — understand the user's taxonomy priorities:**
 - Are tags primarily in frontmatter, inline (`#tag`), or both?
-- Nested tags (`#project/active`) or flat (`#project`, `#active`)?
+- Nested tags (`#project/active`) or flat (`#project`, `#active`)? Is there
+  a hierarchy that reflects the user's mental model (e.g., `#project/active`
+  vs `#status/active` suggest different organizational philosophies)?
 - Casing: lowercase-hyphenated, camelCase, or mixed?
-- Persist the pattern
+- How heavily does the user rely on tags vs folders for organization? Some
+  vaults use folders as the primary axis and tags sparingly for cross-cutting
+  concerns; others use tags as the primary taxonomy with a flat folder
+  structure. Understanding this shapes how you tag new notes.
+- **Numeric-only tags are invalid** — Obsidian rejects purely numeric tags
+  (e.g., `2025`) even when YAML-quoted. If you find numeric-ish conventions,
+  check how the vault handles them (likely a separate property like `year:`).
+- Persist the pattern and the rationale behind it
 
 **5. Date format:**
 - What date format appears in frontmatter? (Usually ISO 8601, but check)
@@ -169,6 +204,40 @@ record exists), detect and confirm these conventions before writing anything:
 - Is the board used for workflow state (lane position = status) instead of
   custom task statuses?
 - Persist the pattern
+
+**8. Daily notes — detect the interaction model:**
+- Is the Daily Notes core plugin enabled? Check `.obsidian/core-plugins.json`.
+- Where do daily notes live? Check the Daily Notes settings for folder and
+  date format.
+- Sample 2-3 existing daily notes to understand the structure: Is there a
+  template? What sections exist? Are sections auto-managed by a plugin?
+- **Check for plugin-managed sections.** Community plugins like
+  `obsidian-list-modified` automatically maintain sections in daily notes
+  (e.g., "Files Created", "Files Modified"). If such a plugin is active,
+  agents must not write to those sections — or to the daily note at all,
+  depending on the plugin's scope.
+- If daily notes are NOT plugin-managed, ask the user how they'd like agents
+  to interact with them: append to a specific section? Leave them alone?
+  Update a specific template section?
+- If daily notes ARE plugin-managed but the user wants template improvements,
+  discuss what sections or content they'd like added or refined in the
+  template.
+- Persist the interaction model: which sections are off-limits, what agents
+  can add, and the template path if relevant.
+
+**9. Hub and index notes — detect navigational patterns:**
+- Some vaults use hub notes, Maps of Content (MOCs), or index files
+  (e.g., `INDEX.md`, `MOC.md`, or a note with a distinctive name) as entry
+  points for folders or topic areas. These aggregate links, embed sections,
+  or provide Dataview tables that serve as dashboards.
+- Scan a few folders for recurring patterns: Is there always an `INDEX.md`?
+  A note that matches the folder name? A note with a `type: moc` property?
+- If hub notes exist, they need maintenance: when creating, renaming, or
+  deleting a note in a folder with a hub note, check whether the hub needs
+  updating (add/remove/rename an entry). This is a vault-specific convention
+  — detect it, don't assume it.
+- Persist the pattern: which folders have hub notes, what format they use,
+  and what maintenance they require.
 
 ### What to Look For in Existing Notes
 
@@ -337,6 +406,13 @@ outgoing links is an island.
 - **Aliases for cleaner prose.** If the note name is awkward in a sentence,
   use display text: `[[Meeting Notes 2025-01-15|last week's meeting]]` or
   `[last week's meeting](Meeting Notes 2025-01-15.md)`.
+- **Bidirectional `related:` frontmatter links.** If the vault uses a
+  `related:` property in frontmatter to connect notes, maintain
+  bidirectionality: when adding note B to note A's `related:` list, add
+  note A to note B's `related:` in the same edit pass. This keeps the
+  Properties pane, graph view, and Dataview queries symmetrical. Check
+  during convention detection whether the vault follows this pattern — if
+  it does, every `related:` addition is a two-file operation.
 
 ### Embeds — when to use them
 
@@ -493,6 +569,8 @@ points:
 - In frontmatter: always under `tags:` as a list, no `#` prefix
 - Nested with `/` separator: `#project/active`
 - No spaces; use hyphens or underscores
+- **No purely numeric tags** — Obsidian rejects tags like `2025` even when
+  YAML-quoted. Use a separate frontmatter property (e.g., `year: "2025"`)
 - Check the vault's convention: frontmatter-only, inline-only, or both
 
 ---
@@ -590,8 +668,11 @@ yet have an Obsidian-aware CLAUDE.md:
 
 ## What This Skill Does Not Do
 
-- Rename or move files — always ask the user to use Obsidian's rename
-  function to preserve link integrity
+- Rename or move files without link-safe tooling — if Obsidian CLI is
+  available, `obsidian move` handles renames with automatic link updates.
+  If not, either ask the user to rename via Obsidian's UI, or rename
+  directly and offer to find and update broken links via search. See
+  `references/vault-tools.md` for the full tool decision matrix.
 - Treat `.canvas` files as plain text — use the Canvas JSON rules in
   `references/core-plugins.md`
 - Add Templater syntax to non-template notes

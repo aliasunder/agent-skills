@@ -192,6 +192,24 @@ When `trigger_on_file_creation` is enabled:
 configured, the template will run automatically. Do not manually add content
 that the template would provide — it causes duplication.
 
+### Sync and Cloud Storage Hazards
+
+If the vault is stored on iCloud Drive, Dropbox, or another sync service,
+`trigger_on_file_creation` can fire unexpectedly:
+
+- **iCloud re-download:** When a file is evicted from local storage and
+  re-downloaded, the OS creates it anew — Templater may treat this as a
+  "new file" and re-run the template on an already-populated note
+- **Sync conflict copies:** Sync services sometimes create conflict copies
+  (e.g., `Note (Conflicted copy).md`). If these land in a mapped folder,
+  Templater may process them
+- **Cross-device creation:** A file created on one device triggers Templater
+  when it syncs to another device with Obsidian running
+
+These edge cases are hard to reproduce and easy to miss. If the vault uses
+cloud sync AND `trigger_on_file_creation`, agents should be extra cautious
+about creating files in mapped folders.
+
 ---
 
 ## Interaction with Other Plugins
@@ -283,6 +301,13 @@ When creating or editing template files:
    that matches the vault's property schemas (for Dataview/Bases compatibility).
 6. **Don't hardcode the template folder path** — use `tp.file.folder()` or
    relative references.
+7. **Beware the two-sources-of-truth problem** — If both Templater folder
+   templates and agent workflows create notes in the same folders, there are
+   two systems that think they're responsible for initial content. Document
+   which system "owns" file creation in each folder and stick to it. If
+   Templater owns a folder (via folder template mapping), agents should let
+   Templater handle creation and only edit afterward. If agents own the
+   folder, consider disabling the folder template mapping for it.
 
 ---
 
@@ -309,10 +334,20 @@ Key Templater settings that affect agent behavior:
    a Promise object, not the user's input. Always `await` async functions.
 3. **Blank lines from script blocks** — Use `-%>` to trim trailing newlines on
    `<%* %>` blocks that should produce no output.
-4. **Duplicate content with folder templates** — If `trigger_on_file_creation`
-   is enabled and an agent writes to a new file in a mapped folder, the template
-   runs AND the agent writes — causing duplicate content. Check folder template
-   mappings before programmatically creating files.
+4. **`trigger_on_file_creation` is a critical hazard for agent workflows** —
+   When this setting is enabled, Templater runs a template on EVERY new file
+   created in mapped folders, regardless of how the file was created. This
+   means:
+   - An agent creates a file with content → Templater detects the new file →
+     runs the folder template → overwrites or duplicates the agent's content
+   - The race condition depends on timing: if Templater fires before the
+     agent finishes writing, the result is unpredictable
+   - **Before creating any file in a vault with Templater installed:** check
+     `.obsidian/plugins/templater-obsidian/data.json` for
+     `trigger_on_file_creation` and `folder_templates` mappings
+   - If the target folder has a mapping, either: (a) create the file and let
+     the template handle initial content, then append/edit after; or (b) create
+     the file in a different folder first, then move it
 5. **Date format mismatch** — Templater uses Moment.js format tokens. ISO dates
    are `YYYY-MM-DD`, not `yyyy-MM-dd` (which is a different library's format).
 6. **Template variables across blocks** — Variables from `<%* %>` blocks are

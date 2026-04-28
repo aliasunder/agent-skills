@@ -54,10 +54,13 @@ Reference documentation for the following, loaded on demand as needed:
 - **Community plugins** — Dataview, Tasks, Kanban, Meta Bind, Templater
 - **Obsidian-flavored markdown** — embeds, block references, callouts, Mermaid, math
 - **Property types** — YAML types, reserved keys, vault-wide type consistency
+- **Vault access tools** — direct file ops, Obsidian CLI, MCP tools — when to use what
 
 ## Contributing
 
 PRs welcome — especially for additional plugin conventions (Excalidraw, Obsidian Git, Periodic Notes, etc.) and cross-plugin interaction gotchas.
+
+### File structure
 
 ```
 .claude-plugin/plugin.json
@@ -72,4 +75,5 @@ skills/obsidian-vault/
     kanban.md
     meta-bind.md
     templater.md
+    vault-tools.md
 ```
