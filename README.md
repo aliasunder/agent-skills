@@ -1,6 +1,6 @@
 # cowork-plugins
 
-Carefully built plugins for [Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork)and [Claude Code](https://code.claude.com/docs/en/overview). The plugin ecosystem is now shared — install in either environment and it shows up in both.
+Carefully built plugins for [Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork) and [Claude Code](https://code.claude.com/docs/en/overview). The plugin ecosystem is now shared — install in either environment and it shows up in both.
 
 Install this marketplace via **Settings > Plugins > Add marketplace** using `aliasunder/cowork-plugins`.
 
