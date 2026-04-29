@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code), Codex CLI, and othe
 
 ## Project Overview
 
-`cowork-plugins` is a collection of plugins for **Claude Cowork** — a mode in the Claude desktop app that gives Claude access to files and a sandboxed shell. Plugins extend Cowork with skills (specialized capabilities) and commands (slash-command workflows).
+`cowork-plugins` is a collection of plugins for **Cowork** and **Claude Code**. Plugins extend what Claude can do by adding skills (specialized capabilities) and commands (slash-command workflows).
 
 This is a public marketplace installed via **Settings > Plugins > Add marketplace** using `aliasunder/cowork-plugins`.
 
@@ -28,24 +28,27 @@ cowork-plugins/
 
 ### Current Plugins
 
-| Plugin | Directory | Description |
-|--------|-----------|-------------|
-| Trip Planner | `trip-planner/` | Multi-week trip planning across 15+ sessions with cross-validated research, budget tracking, printable daily cards, and phase-based workflow |
+|Plugin        |Directory        |Description                                                                                                                                                                       |
+|--------------|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|Trip Planner  |`trip-planner/`  |Multi-week trip planning across 15+ sessions with cross-validated research, budget tracking, printable daily cards, and phase-based workflow                                      |
+|Obsidian Vault|`obsidian-vault/`|Vault-aware editing for Obsidian. Detects conventions, understands Dataview, Tasks, Kanban, Meta Bind, and Templater interactions, and keeps notes connected, queryable, and safe.|
 
 ## Plugin Architecture
 
-Each plugin lives in its own top-level directory. Cowork discovers plugins automatically via `.claude-plugin/plugin.json`.
+Each plugin lives in its own top-level directory. Both Cowork and Claude Code discover plugins automatically via `.claude-plugin/plugin.json`.
 
 ### plugin.json
 
 Required fields:
+
 - `name` — display name
 - `version` — semver
 - `description` — short description
 
 ### Skills (`skills/<skill-name>/SKILL.md`)
 
-Skills are specialized capabilities loaded by Claude when a task matches the skill's description. Each skill has:
+Skills are specialized capabilities loaded by Claude when a task matches the skill’s description. Each skill has:
+
 - A descriptive header
 - Trigger conditions
 - Step-by-step workflow instructions
@@ -60,7 +63,7 @@ Slash commands are workflow files invoked explicitly by the user.
 - No build system or package manager — plugins are markdown/JSON files
 - Follow existing plugin structure when adding new plugins
 - Use the `trip-planner/` plugin as a reference implementation
-- `.claude-plugin/plugin.json` is required for Cowork discovery
+- `.claude-plugin/plugin.json` is required for plugin discovery
 
 ## Releasing
 
@@ -80,9 +83,9 @@ See `CONTRIBUTING.md` for full details.
 ## Adding a New Plugin
 
 1. Create a top-level directory: `my-plugin/`
-2. Add `.claude-plugin/plugin.json` with name, version, and description matching the current marketplace version
-3. Add skills under `skills/<skill-name>/SKILL.md`
-4. Add the plugin entry to `.claude-plugin/marketplace.json`
-5. Add commands under `commands/` if needed
-6. Add static assets under `assets/` if needed
-7. Document the plugin in the root `README.md` plugins table
+1. Add `.claude-plugin/plugin.json` with name, version, and description matching the current marketplace version
+1. Add skills under `skills/<skill-name>/SKILL.md`
+1. Add the plugin entry to `.claude-plugin/marketplace.json`
+1. Add commands under `commands/` if needed
+1. Add static assets under `assets/` if needed
+1. Document the plugin in the root `README.md` plugins table
