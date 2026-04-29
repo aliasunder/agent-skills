@@ -1,6 +1,6 @@
 {
   "name": "aliasunder-plugins",
-  "description": "Cowork plugins by aliasunder — task-specific skills for Claude Cowork sessions.",
+  "description": "Plugins by aliasunder — carefully built skills for Cowork and Claude Code.",
   "owner": {
     "name": "aliasunder"
   },
@@ -30,7 +30,12 @@
         "markdown",
         "note-taking",
         "pkm",
-        "vault"
+        "vault",
+        "dataview",
+        "kanban",
+        "tasks",
+        "templater",
+        "meta-bind"
       ]
     }
   ]
