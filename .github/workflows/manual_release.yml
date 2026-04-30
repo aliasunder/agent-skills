@@ -19,7 +19,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Calculate next version
         id: next
@@ -55,6 +57,15 @@ jobs:
             echo "Updated $PLUGIN_JSON → $NEXT"
           done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
 
+      - name: Generate release notes
+        run: |
+          bash .github/scripts/generate-notes.sh HEAD > /tmp/release-notes.md
+
+      - name: Update changelog
+        env:
+          NEXT: ${{ steps.next.outputs.version }}
+        run: bash .github/scripts/update-changelog.sh "$NEXT" /tmp/release-notes.md
+
       - name: Commit, tag, and push
         env:
           NEXT: ${{ steps.next.outputs.version }}
@@ -66,13 +77,18 @@ jobs:
           git tag "v${NEXT}"
           git push origin HEAD --tags
 
-      - name: Build .skill artifacts
+      - name: Build artifacts
         run: |
           while IFS= read -r PLUGIN_JSON; do
             PLUGIN_DIR=$(dirname "$(dirname "$PLUGIN_JSON")")
             PLUGIN_NAME=$(basename "$PLUGIN_DIR")
+
             echo "Building $PLUGIN_NAME.skill..."
             (cd "$PLUGIN_DIR/skills" && zip -r "../../${PLUGIN_NAME}.skill" "$PLUGIN_NAME/")
+
+            echo "Building $PLUGIN_NAME.zip..."
+            (cd "$PLUGIN_DIR" && zip -r "../${PLUGIN_NAME}.zip" . \
+              -x "evals/*" "dist/*" ".gitignore")
           done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
 
       - name: Create GitHub release
@@ -80,7 +96,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           NEXT: ${{ steps.next.outputs.version }}
         run: |
-          SKILL_FILES=$(find . -maxdepth 1 -name '*.skill' -print)
-          gh release create "v${NEXT}" $SKILL_FILES \
+          ARTIFACTS=$(find . -maxdepth 1 \( -name '*.skill' -o -name '*.zip' \) -print)
+          gh release create "v${NEXT}" $ARTIFACTS \
             --title "v${NEXT}" \
-            --generate-notes
+            --notes-file /tmp/release-notes.md

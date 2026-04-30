@@ -12,7 +12,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Extract version from tag
         id: tag
@@ -61,22 +61,57 @@ jobs:
     needs: validate
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
-      - name: Build .skill artifacts
+      - name: Extract version from tag
+        id: tag
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          NOTES=$(bash .github/scripts/generate-notes.sh "$GITHUB_REF_NAME")
+          # Write to file for multi-line handling
+          echo "$NOTES" > /tmp/release-notes.md
+
+      - name: Build artifacts
         run: |
           while IFS= read -r PLUGIN_JSON; do
             PLUGIN_DIR=$(dirname "$(dirname "$PLUGIN_JSON")")
             PLUGIN_NAME=$(basename "$PLUGIN_DIR")
+
             echo "Building $PLUGIN_NAME.skill..."
             (cd "$PLUGIN_DIR/skills" && zip -r "../../${PLUGIN_NAME}.skill" "$PLUGIN_NAME/")
+
+            echo "Building $PLUGIN_NAME.zip..."
+            (cd "$PLUGIN_DIR" && zip -r "../${PLUGIN_NAME}.zip" . \
+              -x "evals/*" "dist/*" ".gitignore")
           done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
 
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          SKILL_FILES=$(find . -maxdepth 1 -name '*.skill' -print)
-          gh release create "$GITHUB_REF_NAME" $SKILL_FILES \
+          ARTIFACTS=$(find . -maxdepth 1 \( -name '*.skill' -o -name '*.zip' \) -print)
+          gh release create "$GITHUB_REF_NAME" $ARTIFACTS \
             --title "$GITHUB_REF_NAME" \
-            --generate-notes
+            --notes-file /tmp/release-notes.md
+
+      - name: Update changelog
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: bash .github/scripts/update-changelog.sh "$VERSION" /tmp/release-notes.md
+
+      - name: Commit changelog update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash
+          git checkout main
+          git stash pop
+          git add CHANGELOG.md
+          git diff --cached --quiet && exit 0
+          git commit -m "docs: update CHANGELOG.md for $GITHUB_REF_NAME"
+          git push origin main
