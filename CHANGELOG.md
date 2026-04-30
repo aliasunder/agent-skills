@@ -1,5 +1,27 @@
 # Changelog
 
+
+## [0.6.1] — 2026-04-30
+
+### Documentation
+
+- Add CODEOWNERS for automatic PR review requests
+- Add code of conduct, security policy, and PR template
+
+### CI / Infrastructure
+
+- Add package.json to version bump and validation workflows
+
+### Maintenance
+
+- Add package.json for registry metadata
+
+### Other Changes
+
+- Enhance security policy with scope and version details
+- Delete SECURITY.md
+- Update issue templates
+
 All notable changes to this project are documented here. This marketplace
 contains multiple plugins — changes are grouped by version with affected
 plugins noted.
