@@ -32,6 +32,7 @@ All plugins share one version. These files must stay in sync:
 |------|--------|
 | `.claude-plugin/marketplace.json` | `metadata.version`, `plugins[].version` |
 | `<plugin>/.claude-plugin/plugin.json` | `version` |
+| `package.json` | `version` |
 
 The CI handles this automatically. If you're bumping manually for some reason, update all of them.
 

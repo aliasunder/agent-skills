@@ -25,6 +25,7 @@ Bump the version across all plugin config files, commit, tag, and push. The CI r
 4. **Update all version files**:
    - `.claude-plugin/marketplace.json` → set `metadata.version` AND every `plugins[].version`
    - Find all `*/.claude-plugin/plugin.json` (excluding `./.claude-plugin/`) and update their `version`
+   - `package.json` → set `version`
    - Use `jq` for JSON edits to preserve formatting
 
 5. **Confirm with user**: Show the version change and list of files modified. Ask for confirmation before committing.

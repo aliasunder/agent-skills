@@ -77,6 +77,7 @@ All plugins share a single version. Two CI workflows handle releases:
 
 - `.claude-plugin/marketplace.json` → `metadata.version` + each `plugins[].version`
 - `<plugin>/.claude-plugin/plugin.json` → `version`
+- `package.json` → `version`
 
 See `CONTRIBUTING.md` for full details.
 

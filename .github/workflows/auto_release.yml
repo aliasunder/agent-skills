@@ -49,6 +49,14 @@ jobs:
             fi
           done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
 
+          # Check package.json
+          if [ -f package.json ]; then
+            PKG_VERSION=$(jq -r '.version' package.json)
+            if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+              ERRORS+="  package.json: $PKG_VERSION\n"
+            fi
+          fi
+
           if [ -n "$ERRORS" ]; then
             echo "::error::Version mismatch! Tag is v$TAG_VERSION but these files differ:"
             echo -e "$ERRORS"

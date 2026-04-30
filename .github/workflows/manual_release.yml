@@ -57,6 +57,12 @@ jobs:
             echo "Updated $PLUGIN_JSON → $NEXT"
           done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
 
+          # Update package.json
+          if [ -f package.json ]; then
+            jq --arg v "$NEXT" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+            echo "Updated package.json → $NEXT"
+          fi
+
       - name: Generate release notes
         run: |
           bash .github/scripts/generate-notes.sh HEAD > /tmp/release-notes.md
