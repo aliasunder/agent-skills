@@ -4,34 +4,22 @@ All notable changes to this project are documented here. This marketplace
 contains multiple plugins — changes are grouped by version with affected
 plugins noted.
 
-## [Unreleased]
+## [0.6.0] — 2026-04-30
 
-### obsidian-vault
-- **Extract Bases and Canvas into standalone reference files** — `core-plugins.md`
-  trimmed from 688→361 lines; Bases (filters, `.base` format, formulas) and
-  Canvas (node sizing, edge labels, group containment) now load on demand
-- **Add Bases filter function reference** — confirmed working functions
-  (`.containsAny`, `file.inFolder`), the `.is()` gotcha, `.base` file YAML
-  format, and Bases vs Dataview comparison
-- **Add Canvas quirks** — node sizing minimums, `###` heading padding
-  (~40px), file node workaround (use text nodes with wikilinks), group
-  sizing formulas, edge label `\n` support, edge label occlusion guidance
-- **Add wikilink pipe-escape gotcha** — `\|` required for aliases inside
-  markdown table cells
-- **Strengthen "look things up" principle** — explicitly names WebSearch,
-  defines trigger ("two failed attempts without searching is too many"),
-  lists search targets (help.obsidian.md, forum, r/ObsidianMD, GitHub issues)
+### Features
 
-### All plugins
-- **Unified branding** — all docs now reflect that plugins work in both
-  Cowork and Claude Code (unified plugin ecosystem)
+- Reference updates, Bases/Canvas extraction, unified branding
 
-### CI
-- **Upgrade to actions/checkout@v5** (Node 24) — resolves Node 20
-  deprecation warnings
-- **Add plugin zip artifacts to releases** — each release now attaches both
-  `.skill` (skills only) and `.zip` (full plugin) per plugin
+### CI / Infrastructure
 
+- Automated changelog, shared scripts, Node 24, plugin zips
+
+### Other Changes
+
+- Update AGENTS.md
+- Update marketplace.json
+- Update README.md
+- Update README.md
 ## [0.5.3] — 2026-04-28
 
 ### trip-planner
