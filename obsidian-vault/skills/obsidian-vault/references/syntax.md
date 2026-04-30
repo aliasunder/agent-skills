@@ -229,3 +229,26 @@ Markdown links require standard URL encoding for spaces in paths:
 [text](My%20Long%20Note%20Name.md)   ✓  URL-encoded spaces
 [text](My Long Note Name.md)         ⚠  may work in Obsidian but not portable
 ```
+
+### Wikilink Aliases Inside Markdown Tables
+
+Wikilink aliases use `|` which is also the markdown table column delimiter.
+Inside a table cell, unescaped `|` in a wikilink breaks the table — the
+parser sees it as a column boundary before the wikilink parser can process
+it.
+
+```markdown
+<!-- ❌ Breaks — alias pipe consumed as table delimiter -->
+| Link | [[Career/TASKS|TASKS]] |
+
+<!-- ✅ Works — escaped pipe preserved for wikilink parser -->
+| Link | [[Career/TASKS\|TASKS]] |
+```
+
+**Scope:** This only applies inside markdown table cells. Wikilinks with `|`
+work fine in normal prose, frontmatter (`related:` lists), callouts, and
+list items.
+
+**Agent rule:** Any wikilink written into a table cell must use `\|` for the
+alias separator. This is easy to miss because the same link works everywhere
+else without escaping.

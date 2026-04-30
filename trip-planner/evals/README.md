@@ -6,7 +6,7 @@ Each eval tests whether the skill produces better trip planning outputs than a b
 
 ## How evals are run
 
-There is no automated test harness. Evals are run manually using Claude agents (subagents in Cowork or Claude Code) in a **with-skill vs without-skill** comparison pattern:
+There is no automated test harness. Evals are run manually using Claude agents (subagents in Cowork or Claude Code — both support plugins) in a **with-skill vs without-skill** comparison pattern:
 
 ### Running a single eval
 
@@ -33,7 +33,7 @@ Each eval run involves 4+ agent invocations (2 test agents + 2 grading agents) a
 
 ### Could this be automated?
 
-Partially. The eval definitions in `evals.json` are structured enough to drive a programmatic runner (create temp dir → seed files → spawn agent → collect outputs → grade). The skill-creator skill in the Cowork plugin ecosystem has eval infrastructure that could be adapted. The main barrier to full automation is grading — assertions like "research is visibly shaped by booking philosophy" require semantic evaluation, not string matching. A hybrid approach (automated runner + LLM grader) would work but hasn't been built yet.
+Partially. The eval definitions in `evals.json` are structured enough to drive a programmatic runner (create temp dir → seed files → spawn agent → collect outputs → grade). The skill-creator skill in the plugin ecosystem has eval infrastructure that could be adapted. The main barrier to full automation is grading — assertions like "research is visibly shaped by booking philosophy" require semantic evaluation, not string matching. A hybrid approach (automated runner + LLM grader) would work but hasn't been built yet.
 
 ## Test scenarios
 

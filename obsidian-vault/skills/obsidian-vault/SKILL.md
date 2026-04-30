@@ -54,10 +54,16 @@ upfront.
 
 ### Core plugins
 - `references/core-plugins.md` — Core Obsidian plugin conventions: Properties
-  (type inference), Daily Notes, Templates, Bases (database views), Canvas
-  (JSON format), Graph, Backlinks, Slides, Sync. **Read before working with
-  any core plugin feature — especially Bases formulas, Canvas JSON, or Daily
-  Notes templates.**
+  (type inference), Daily Notes, Templates, Graph, Backlinks, Slides, Sync.
+  **Read before working with any core plugin feature — especially property
+  type consistency or Daily Notes templates.**
+- `references/bases.md` — Bases database views: `.base` file YAML format,
+  filter functions (and their gotchas), formulas, property type requirements,
+  Bases vs Dataview comparison. **Read before creating or editing `.base`
+  files or writing notes that feed into a Bases view.**
+- `references/canvas.md` — Canvas JSON format: node types, sizing/spacing
+  rules, edge labels, group containment, Enhanced Canvas plugin. **Read
+  before creating or editing `.canvas` files.**
 
 ### Community plugins
 - `references/dataview.md` — Dataview queries, inline fields, DataviewJS,
@@ -114,14 +120,28 @@ something means you'll need to redo it.
    in the vault — link style, frontmatter schema, task format, tag placement,
    date format — check whether it's intentional and persist the finding.
    See "Convention Detection" below.
-8. **Look things up before guessing.** When you encounter unfamiliar Obsidian
-   syntax, a plugin feature you're not sure about, or a convention that
-   could go multiple ways, proactively consult official documentation and
-   community best practices. Fetch the relevant plugin's published docs
-   (linked at the top of each reference file), search for community
-   conventions, and verify your understanding before writing. Don't assume
-   default behavior — plugin settings change it, and vaults diverge from
-   defaults frequently.
+8. **Look things up — don't guess and iterate.** When you encounter
+   unfamiliar Obsidian syntax, a plugin feature you're unsure about, or a
+   convention that could go multiple ways, **use WebSearch to check official
+   docs and community forums before writing anything.** Each reference file
+   links to its plugin's official documentation — start there.
+
+   **Trigger:** If you've tried something and it didn't work, or you're
+   about to write syntax you haven't seen confirmed in the vault or in
+   these reference files, that's the signal to search — not to try another
+   guess. Two failed attempts without searching is too many.
+
+   **What to search:** The Obsidian docs site (`help.obsidian.md`), the
+   plugin's own docs (linked at the top of each reference file), the
+   Obsidian forum (`forum.obsidian.md`), Reddit (`r/ObsidianMD`), and
+   GitHub issues for the relevant plugin. Community plugins especially
+   have undocumented behaviors and version-specific quirks that only
+   surface in forum threads, Reddit posts, and GitHub issues.
+
+   **Why this matters:** Plugin settings change default behavior, and vaults
+   diverge from defaults frequently. Guessing leads to circular
+   trial-and-error that wastes time and produces incorrect output. A single
+   WebSearch call is faster than three wrong attempts.
 
 ---
 
@@ -288,7 +308,7 @@ even if the agent wouldn't otherwise reach for it.
 
 **Option 2: Auto-memory (supplemental)**
 
-If auto-memory is available (Cowork environments), use it for conventions
+If auto-memory is available (Cowork and Claude Code), use it for conventions
 that are better expressed as behavioral guidance than as a settings list:
 
 ```markdown
@@ -622,10 +642,10 @@ the file — only report unless told to fix.
 
 ---
 
-## Setting Up a New Vault-Embedded Cowork Project
+## Setting Up a New Vault-Embedded Project
 
-If a Cowork project has been created in (or alongside) a vault and doesn't
-yet have an Obsidian-aware CLAUDE.md:
+If a Cowork or Claude Code project has been created in (or alongside) a
+vault and doesn't yet have an Obsidian-aware CLAUDE.md:
 
 1. **Check for `.obsidian/` in the working directory or any ancestor
    directory** — a vault often contains many Cowork projects as
@@ -636,7 +656,8 @@ yet have an Obsidian-aware CLAUDE.md:
    above. Read existing notes, check plugin configs, identify patterns.
 
 3. **Recommend a project CLAUDE.md section** — suggest the user add detected
-   conventions to their Cowork project settings. Example:
+   conventions to their project's CLAUDE.md (or Cowork project settings).
+   Example:
 
    ```
    ## Obsidian Vault

@@ -160,82 +160,13 @@ See `references/templater.md` → Templater vs Core Templates Plugin. Summary:
 
 **Plugin ID:** `bases` (Obsidian 1.8+)
 
-Bases are `.base` files that define database-like views over vault notes. They
-query frontmatter properties and display results as tables, boards, or
-calendars — similar to Notion databases but over plain markdown files.
+Bases are `.base` files that define database-like views over vault notes —
+tables, boards, and calendars over plain markdown. Bases is strict about
+property types and has limited (undocumented) filter functions.
 
-### How Bases Work
-
-1. A `.base` file defines a view configuration (source folder, columns, filters)
-2. Bases reads all notes in the source folder/path
-3. Each note becomes a row; frontmatter properties become columns
-4. The view is interactive — clicking a cell edits the property in the source note
-
-### Property Type Requirements
-
-Bases is **strict about property types** — stricter than Dataview:
-
-| Bases column type | Required YAML type | Failure mode |
-|---|---|---|
-| Text | String | Works with most values |
-| Number | Unquoted number | Quoted numbers show but don't sort/filter correctly |
-| Checkbox | `true`/`false` | `"true"` (string) doesn't render as checkbox |
-| Date | ISO 8601 | Non-ISO dates show as text, don't filter by date |
-| Multi-select | YAML list | Comma-separated strings don't split into tags |
-| Link | Quoted wikilink | Unquoted wikilinks break YAML |
-
-**Agent rule:** When writing notes that will appear in a Bases view, ensure
-every property matches the expected type exactly. Test by checking existing
-notes in the same source folder.
-
-**Inline field limitation:** Bases only reads YAML frontmatter properties.
-Dataview inline fields (`field:: value` in the note body) are invisible to
-Bases. If data needs to appear in a Bases view, it must be in frontmatter.
-
-### Bases Formulas
-
-Bases supports formulas for computed columns:
-
-```
-prop("due")                      Reference a property
-now()                            Current date
-if(prop("done"), "✅", "⬜")     Conditional
-dateAdd(prop("due"), 7, "days")  Date arithmetic
-```
-
-**Common formula functions:**
-- `prop("name")` — get property value
-- `now()`, `today()` — current date/time
-- `if(condition, then, else)` — conditional
-- `dateAdd(date, amount, unit)` — date arithmetic
-- `dateBetween(date1, date2, unit)` — difference between dates
-- `contains(text, search)` — text search
-- `length(list)` — list length
-- `empty(value)` — check if empty/null
-- `format(value, pattern)` — format values
-- `slice(text, start, end)` — substring
-- `concat(a, b, ...)` — concatenate strings
-
-### Bases Views
-
-| View | Description |
-|---|---|
-| Table | Spreadsheet-like table (default) |
-| Board | Kanban-style board grouped by a property |
-| Calendar | Calendar view based on a date property |
-
-### Interaction with Other Plugins
-
-**Bases ↔ Dataview:** Both read frontmatter. Same property consistency
-requirements apply. If a property schema works for Dataview, it works for
-Bases (not always vice versa — Bases is stricter).
-
-**Bases ↔ Properties:** Both enforce type consistency. Properties pane shows
-conflicts; Bases shows broken columns. They reinforce each other.
-
-**Bases ↔ Meta Bind:** Meta Bind inputs modify frontmatter that Bases reads.
-Changes propagate: user toggles a Meta Bind switch → frontmatter updates →
-Bases view refreshes.
+**Full reference:** `references/bases.md` — read before creating or editing
+`.base` files, writing notes for Bases views, or troubleshooting missing
+notes in views.
 
 ---
 
@@ -243,104 +174,13 @@ Bases view refreshes.
 
 **Plugin ID:** `canvas`
 
-Canvas provides an infinite whiteboard for spatial organization of notes,
-text, images, links, and groups. Canvas files are **JSON** (`.canvas`), not
-markdown.
+Canvas provides an infinite whiteboard for spatial organization. Canvas
+files are **JSON** (`.canvas`), not markdown — with strict structural
+requirements for node IDs, coordinate math, and group containment.
 
-### Canvas File Format
-
-Canvas uses the [JSON Canvas](https://jsoncanvas.org/) open spec:
-
-```json
-{
-  "nodes": [
-    {
-      "id": "unique-id",
-      "type": "text",
-      "text": "Node content",
-      "x": 0, "y": 0,
-      "width": 250, "height": 60
-    }
-  ],
-  "edges": [
-    {
-      "id": "edge-id",
-      "fromNode": "node-a",
-      "fromSide": "right",
-      "toNode": "node-b",
-      "toSide": "left"
-    }
-  ]
-}
-```
-
-### Node Types
-
-| Type | Key fields | Description |
-|---|---|---|
-| `text` | `text` | Free text content (supports markdown) |
-| `file` | `file` | Embedded note (vault-relative path) |
-| `link` | `url` | Embedded web link |
-| `group` | `label` | Visual grouping container |
-
-### Edge Properties
-
-| Field | Values | Required |
-|---|---|---|
-| `id` | Unique string | Yes |
-| `fromNode` | Node ID | Yes |
-| `fromSide` | `top`, `right`, `bottom`, `left` | Yes |
-| `toNode` | Node ID | Yes |
-| `toSide` | `top`, `right`, `bottom`, `left` | Yes |
-| `color` | Color string | No |
-| `label` | Edge label text | No |
-
-### Node Color and Style
-
-Nodes can have colors:
-```json
-{
-  "id": "node-1",
-  "type": "text",
-  "text": "Important",
-  "color": "1",
-  "x": 0, "y": 0,
-  "width": 250, "height": 60
-}
-```
-
-Color values: `"1"` through `"6"` (maps to Obsidian's color palette), or
-hex colors like `"#ff0000"`.
-
-### Rules
-
-- Every node and edge needs a **unique `id`** — use random strings, not
-  sequential integers
-- Edge `fromNode` and `toNode` must reference valid node IDs
-- `file` nodes use vault-relative paths: `"file": "Notes/My Note.md"`
-- `link` nodes use URLs: `"url": "https://example.com"`
-- Groups contain other nodes spatially (by overlapping coordinates), not by
-  reference
-- Do not attempt to read or write `.canvas` files as plain text — always
-  parse/generate as JSON
-
-### Enhanced Canvas (Community Plugin)
-
-The Enhanced Canvas community plugin adds:
-- **Frontmatter on canvas nodes** — text nodes can have YAML frontmatter
-- **Custom CSS on canvas** — CSS snippets for canvas styling
-- **Additional node types and behaviors**
-
-When Enhanced Canvas is active and `enableFrontmatter` is true, text nodes
-can include frontmatter:
-
-```json
-{
-  "id": "node-1",
-  "type": "text",
-  "text": "---\nstatus: active\ntags:\n  - project\n---\n\nNode content here"
-}
-```
+**Full reference:** `references/canvas.md` — read before creating or
+editing `.canvas` files. Covers JSON format, node sizing/spacing rules,
+edge labels, group sizing, and the Enhanced Canvas community plugin.
 
 ---
 

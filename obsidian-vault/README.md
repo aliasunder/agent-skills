@@ -25,9 +25,9 @@ The skill triggers when Claude is working with `.md` files in a project that liv
 
 ## Getting started
 
-Install as a Cowork plugin:
+Install in Cowork or Claude Code:
 
-1. Open **Settings > Plugins** in the Claude desktop app
+1. Open **Settings > Plugins**
 2. Click **Add marketplace** and enter `aliasunder/cowork-plugins`
 3. Enable **obsidian-vault**
 
@@ -70,6 +70,8 @@ skills/obsidian-vault/
     syntax.md
     properties.md
     core-plugins.md
+    bases.md
+    canvas.md
     dataview.md
     tasks.md
     kanban.md

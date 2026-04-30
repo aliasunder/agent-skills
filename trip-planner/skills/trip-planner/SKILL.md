@@ -289,7 +289,7 @@ If no CLAUDE.md exists:
 
 5. **Suggest an email label** for trip-related emails if email tools are available.
 
-6. **Recommend project instructions** — if the platform supports project-level instructions (e.g., Cowork project settings, CLAUDE.md in repo root), suggest the user add session protocol instructions. A good starting point:
+6. **Recommend project instructions** — if the platform supports project-level instructions (e.g., Cowork project settings, Claude Code project CLAUDE.md), suggest the user add session protocol instructions. A good starting point:
    ```
    ## SESSION START
    Always invoke the trip-planner:trip-planner skill before starting any work.

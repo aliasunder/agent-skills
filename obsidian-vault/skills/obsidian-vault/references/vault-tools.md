@@ -40,13 +40,14 @@ environment (Claude Code, Cowork, Cursor, etc.).
 **When to use:** Default for everything. Most agent sessions use direct
 file ops exclusively and never need CLI or MCP.
 
-### 2. Obsidian CLI (Claude Code Only)
+### 2. Obsidian CLI (Local Shell Access Only)
 
 The Obsidian CLI (`obsidian` command) provides a bridge to the running
 Obsidian app. **Requires Obsidian to be running on the same machine** and
 is only available in environments with direct shell access to the user's
-system (Claude Code, terminal-based agents). Not available in sandboxed
-environments like Cowork.
+system (Claude Code in a local terminal, other terminal-based agents). Not
+available in sandboxed environments (Cowork's shell runs in a sandbox
+without access to the user's Obsidian instance).
 
 **Capabilities:**
 - `obsidian open <path>` — open a note in Obsidian
@@ -58,7 +59,8 @@ environments like Cowork.
 
 **Limitations:**
 - Only available when Obsidian is running locally
-- Not available in Cowork (sandboxed shell has no access to user's Obsidian)
+- Not available in sandboxed environments (Cowork's shell has no access to
+  user's Obsidian)
 - Single-file operations only — for bulk work, scripted direct file ops
   are faster
 
@@ -68,12 +70,13 @@ environments like Cowork.
   direct file ops + Grep work just as well)
 - Full-text search as a complement to Grep
 
-### 3. Obsidian REST API + MCP Tools (Cowork-Compatible)
+### 3. Obsidian REST API + MCP Tools (Works in Any Environment)
 
 The `obsidian-local-rest-api` community plugin exposes a REST API, and the
 `mcp-tools` Obsidian plugin (or a dedicated MCP server) makes those
-endpoints available as MCP tools. This is the Cowork-compatible path for
-the few operations that genuinely need Obsidian interaction.
+endpoints available as MCP tools. This works in both Cowork and Claude Code,
+and is the path for the few operations that genuinely need Obsidian
+interaction beyond direct file ops.
 
 **Requirements:**
 - `obsidian-local-rest-api` plugin installed and enabled in Obsidian
@@ -95,7 +98,8 @@ the few operations that genuinely need Obsidian interaction.
 **When to use:**
 - Triggering Templater template execution programmatically (the one thing
   direct file ops genuinely can't do)
-- Showing a file in Obsidian from a Cowork session
+- Showing a file in Obsidian from a sandboxed session (where CLI isn't
+  available)
 - Searching the vault when Grep isn't sufficient (smart/semantic search)
 
 ---

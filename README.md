@@ -20,7 +20,7 @@ In the Claude desktop app:
 3. Enter `aliasunder/cowork-plugins`
 4. Select which plugins to enable
 
-Each plugin has its own `.claude-plugin/plugin.json`, skills, and commands. Cowork discovers them automatically.
+Each plugin has its own `.claude-plugin/plugin.json`, skills, and commands. Both Cowork and Claude Code discover them automatically.
 
 ## Adding a plugin
 

@@ -37,9 +37,9 @@ Detailed methodology lives in `references/` files that get loaded on demand — 
 
 ## Getting started
 
-Install as a Cowork plugin:
+Install in Cowork or Claude Code:
 
-1. Open **Settings > Plugins** in the Claude desktop app
+1. Open **Settings > Plugins**
 2. Click **Add marketplace** and enter `aliasunder/cowork-plugins`
 3. Enable **trip-planner**
 
@@ -58,7 +58,7 @@ The project the plugin creates — CLAUDE.md, TASKS.md, memory structure, file c
 <details>
 <summary>Why a single orchestrator, not multiple skills</summary>
 
-Most Cowork plugins use a **toolkit pattern** — a collection of independent skills where each handles one task (review code, run incident response, research hotels). That works well when skills are genuinely independent.
+Most plugins use a **toolkit pattern** — a collection of independent skills where each handles one task (review code, run incident response, research hotels). That works well when skills are genuinely independent.
 
 Trip planning is different. It's a **sequential, phase-dependent workflow** that runs across many sessions: you can't research restaurants before choosing cities, can't build an itinerary before booking hotels, and every session needs to pick up exactly where the last one left off. A multi-skill approach (separate skills for setup, research, itinerary building, session management) breaks down because:
 
