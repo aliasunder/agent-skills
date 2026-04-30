@@ -1,0 +1,31 @@
+{
+  "name": "cowork-plugins",
+  "version": "0.6.0",
+  "description": "Plugins for Claude Cowork & Claude Code — trip planner, Obsidian vault, and more",
+  "keywords": [
+    "obsidian",
+    "ai-agents",
+    "claude",
+    "obsidian-vault",
+    "ai-tools",
+    "travel-planning",
+    "prompt-engineering",
+    "claude-desktop",
+    "agent-skills",
+    "claude-code",
+    "claude-code-plugin",
+    "claude-skills",
+    "claude-marketplace",
+    "claude-plugins",
+    "claude-cowork",
+    "claude-cowork-plugin"
+  ],
+  "homepage": "https://github.com/aliasunder/cowork-plugins",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aliasunder/cowork-plugins.git"
+  },
+  "license": "MIT",
+  "author": "aliasunder",
+  "private": true
+}
