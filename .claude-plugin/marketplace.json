@@ -5,14 +5,14 @@
     "name": "aliasunder"
   },
   "metadata": {
-    "version": "0.6.1"
+    "version": "0.6.2"
   },
   "plugins": [
     {
       "name": "trip-planner",
       "source": "./trip-planner",
       "description": "End-to-end trip planning project manager. Guides multi-session travel planning from first idea to departure day with 8 planning phases, session protocols, research methodology, budget tracking, and material production.",
-      "version": "0.6.1",
+      "version": "0.6.2",
       "keywords": [
         "travel",
         "trip-planning",
@@ -24,7 +24,7 @@
       "name": "obsidian-vault",
       "source": "./obsidian-vault",
       "description": "Let Claude edit your Obsidian vault without breaking it. Wikilinks stay linked, frontmatter stays queryable, callouts render — and Claude speaks Dataview, Tasks, Templater, Bases, and Canvas fluently.",
-      "version": "0.6.1",
+      "version": "0.6.2",
       "keywords": [
         "obsidian",
         "markdown",

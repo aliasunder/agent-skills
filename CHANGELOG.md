@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [0.6.2] — 2026-05-08
+
+### Documentation
+
+- **obsidian-vault:** Add hash escaping gotcha and combined Kanban card example
+
+
 ## [0.6.1] — 2026-04-30
 
 ### Documentation

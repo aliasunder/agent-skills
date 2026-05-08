@@ -1,6 +1,6 @@
 {
   "name": "cowork-plugins",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Plugins for Claude Cowork & Claude Code — trip planner, Obsidian vault, and more",
   "keywords": [
     "obsidian",
