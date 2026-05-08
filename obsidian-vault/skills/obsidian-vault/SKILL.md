@@ -591,6 +591,11 @@ points:
 - No spaces; use hyphens or underscores
 - **No purely numeric tags** — Obsidian rejects tags like `2025` even when
   YAML-quoted. Use a separate frontmatter property (e.g., `year: "2025"`)
+- **Escape `#` when it doesn't mean a tag** — In prose, `#` followed by
+  letters or numbers looks like a tag to Obsidian (e.g., PR `#5`, issue
+  `#fix-login`). Escape with a backslash (`\#5` renders as #5) or use
+  inline code (`` `#5` ``). Common in changelogs, commit references, and
+  PR descriptions written inside the vault.
 - Check the vault's convention: frontmatter-only, inline-only, or both
 
 ---
@@ -616,6 +621,8 @@ Before returning any `.md` file you wrote — whether new or edited — verify:
 - [ ] Callout syntax is valid (`> [!type]`)
 - [ ] Task syntax is consistent with the vault's convention
 - [ ] Tags use correct format (no spaces, nested with `/`)
+- [ ] No unescaped `#` in non-tag contexts (PR numbers, issue refs, heading
+      mentions in prose — use `\#` or inline code)
 - [ ] Inline comments (`%% ... %%`) preserved if present (when editing)
 - [ ] No accidental section duplication (when editing)
 - [ ] Kanban board structure preserved if editing a board file (settings

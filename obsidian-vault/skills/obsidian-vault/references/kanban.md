@@ -351,6 +351,30 @@ Block IDs are placed at the end of the card line (after any emoji metadata).
 When editing cards, always preserve existing block IDs — other notes may
 reference them with `[[Board#^task-123]]`.
 
+### Combined Card Syntax (Description + Dates + Block ID)
+
+When a card uses Tasks emoji dates AND a block ID, the ordering is strict:
+**description → emoji dates (➕/✅) → block ID (`^id`)**. The block ID must
+be the very last element on the line.
+
+```markdown
+- [ ] Fix login bug ➕ 2025-02-01 ^fix-login
+- [x] Write tests ➕ 2025-01-28 ✅ 2025-02-01 ^write-tests
+- [ ] Deploy v2.0 ⏫ ➕ 2025-02-01 📅 2025-02-15 ^deploy-v2
+- [x] Ship release ⏫ ➕ 2025-02-01 ✅ 2025-02-10 ^ship-release
+```
+
+Wrong — block ID not at end, or non-emoji text after emoji fields:
+```markdown
+- [ ] Fix login bug ^fix-login ➕ 2025-02-01      ✗ block ID before dates
+- [ ] Fix login bug ➕ 2025-02-01 ^fix-login oops  ✗ text after block ID
+```
+
+Obsidian requires block IDs at the end of the line. The Tasks plugin
+recognizes and strips `^id` before parsing emoji fields backward (see
+`references/tasks.md` → Common Pitfalls), so both plugins parse correctly
+when the ordering is: description → emoji dates → block ID.
+
 ---
 
 ## Common Pitfalls
