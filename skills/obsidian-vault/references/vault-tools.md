@@ -143,10 +143,11 @@ At the start of a vault session, determine which tools are available:
 | REST API MCP | Check for `mcp__obsidian-mcp-tools__*` tools in the tool list | Nice-to-have for template execution |
 
 If only direct file ops are available, that covers the vast majority of
-vault work. The main things you genuinely can't do without CLI/MCP are:
-opening notes in Obsidian for the user and executing Templater templates
-programmatically. If Vault Cortex is available, use it for reads, writes,
-and searches — fall back to direct file ops for bulk operations.
+vault work. Two operations require specific tools: opening a note in
+Obsidian needs the CLI or REST API MCP (with Obsidian running locally),
+and executing Templater templates needs the REST API MCP. If Vault Cortex
+is available, use it for reads, writes, and searches — fall back to
+direct file ops for bulk operations.
 
 ---
 
