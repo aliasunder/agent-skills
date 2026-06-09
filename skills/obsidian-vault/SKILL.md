@@ -83,11 +83,10 @@ upfront.
   before creating or editing template files.**
 
 ### Vault access tools
-- `references/vault-tools.md` — Four tool tiers for interacting with vaults
-  (Vault Cortex MCP, direct file ops, Obsidian CLI, REST API MCP),
-  environment detection, and a decision matrix for which tool to use when.
-  **Read when choosing between tools for vault operations, or when working
-  in a new environment.**
+- `references/vault-tools.md` — Tool tiers for interacting with vaults
+  (direct file ops, Obsidian CLI, MCP servers), environment detection, and
+  a decision matrix for which tool to use when. **Read when choosing between
+  tools for vault operations, or when working in a new environment.**
 
 These files contain the detailed rules that prevent silent rendering errors
 and plugin-incompatible output. Reading them after you've already written
