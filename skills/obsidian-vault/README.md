@@ -42,7 +42,7 @@ obsidian-vault:obsidian-vault skill before working with any .md files.
 
 ## Pair with Vault Cortex
 
-For the best experience, use this skill alongside [Vault Cortex](https://github.com/aliasunder/vault-cortex) — a remote MCP server that gives agents full access to your vault from anywhere. The skill teaches agents how to write correctly; Vault Cortex gives them the tools to read, search, and write your vault without requiring Obsidian to be running.
+For the best experience, use this skill alongside [Vault Cortex](https://github.com/aliasunder/vault-cortex) — an MCP server that gives agents access to your vault without requiring Obsidian to be running. The skill teaches agents how to write correctly; Vault Cortex gives them the tools to read, search, and write.
 
 ## Why a skill?
 
