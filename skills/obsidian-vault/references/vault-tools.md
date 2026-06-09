@@ -79,8 +79,9 @@ or remote — without requiring Obsidian to be running. Vault Cortex delivers
 vault content; the obsidian-vault skill ensures it renders correctly.
 
 **Detection:** Look for `vault_*` tools (e.g. `vault_read_note`,
-`vault_search`, `vault_write_note`) in the available tool list. These tools
-are typically pre-allowed and never trigger permission prompts.
+`vault_search`, `vault_write_note`) in the available tool list. MCP tools
+can be easily marked as allowed in agent settings, unlike shell commands
+which often require manual approval for each invocation.
 
 **Capabilities (23 tools across 7 categories):**
 - **CRUD:** `vault_read_note`, `vault_write_note`, `vault_patch_note`,
@@ -156,10 +157,11 @@ At the start of a vault session, determine which tools are available:
 | REST API MCP | Check for `mcp__obsidian-mcp-tools__*` tools in the tool list | Nice-to-have for template execution |
 
 If Vault Cortex tools are available, prefer them for all vault reads,
-writes, and searches — they're pre-allowed and never trigger permission
-prompts. Fall back to direct file ops for bulk operations or when Vault
-Cortex is unavailable. If only direct file ops are available, that still
-covers the vast majority of vault work.
+writes, and searches — MCP tools can be marked as allowed in agent
+settings, avoiding the per-invocation approval prompts that shell commands
+and direct file ops often require. Fall back to direct file ops for bulk
+operations or when Vault Cortex is unavailable. If only direct file ops
+are available, that still covers the vast majority of vault work.
 
 ---
 
