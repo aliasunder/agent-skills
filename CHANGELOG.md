@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [1.0.0] — 2026-06-09
+
+### Refactoring
+
+- Restructure from cowork-plugins marketplace to agent-skills convention
+
+
 ## [0.6.2] — 2026-05-08
 
 ### Documentation
