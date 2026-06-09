@@ -1,6 +1,6 @@
 {
   "name": "agent-skills",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Agent skills for AI coding agents — trip planner, Obsidian vault, and more",
   "keywords": [
     "agent-skills",

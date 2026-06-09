@@ -1,6 +1,26 @@
 # Changelog
 
 
+## [1.0.1] — 2026-06-09
+
+### Bug Fixes
+
+- Clarify which tools can open files in Obsidian
+- Correct Vault Cortex deployment description
+- Correct MCP tool permission language in vault-tools.md
+
+### Refactoring
+
+- Remove REST API MCP tier from vault-tools reference
+- Tone down Vault Cortex presence in vault-tools reference
+
+### Documentation
+
+- Move Vault Cortex mention from root README to skill README
+- **obsidian-vault:** Add Vault Cortex as preferred MCP tool tier
+- Update CHANGELOG.md for v1.0.0
+
+
 ## [1.0.0] — 2026-06-09
 
 ### Refactoring
