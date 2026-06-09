@@ -40,6 +40,10 @@ This project lives inside an Obsidian vault. Always invoke the
 obsidian-vault:obsidian-vault skill before working with any .md files.
 ```
 
+## Pair with Vault Cortex
+
+For the best experience, use this skill alongside [Vault Cortex](https://github.com/aliasunder/vault-cortex) — a remote MCP server that gives agents full access to your vault from anywhere. The skill teaches agents how to write correctly; Vault Cortex gives them the tools to read, search, and write your vault without requiring Obsidian to be running.
+
 ## Why a skill?
 
 Obsidian isn't just markdown. Between Obsidian-flavored syntax, community plugin conventions, and the non-obvious ways plugins interact with each other, there's a lot of knowledge an agent needs to get your notes right.

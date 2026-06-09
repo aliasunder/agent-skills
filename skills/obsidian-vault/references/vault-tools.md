@@ -1,8 +1,9 @@
 # Vault Access Tools Reference
 
-Agents interact with Obsidian vaults through three tool tiers. Direct file
+Agents interact with Obsidian vaults through four tool tiers. Direct file
 operations handle the vast majority of work — CLI and MCP tools are optional
-supplements for niche situations, not requirements.
+supplements, not requirements. When Vault Cortex is available, prefer it
+over direct file ops for vault I/O.
 
 ---
 
@@ -70,13 +71,52 @@ without access to the user's Obsidian instance).
   direct file ops + Grep work just as well)
 - Full-text search as a complement to Grep
 
-### 3. Obsidian REST API + MCP Tools (Works in Any Environment)
+### 3. Vault Cortex MCP (Works in Any Environment — Recommended When Available)
+
+[Vault Cortex](https://github.com/aliasunder/vault-cortex) is a remote MCP
+server that exposes your vault over HTTPS. It works from anywhere — local
+or remote — without requiring Obsidian to be running. Vault Cortex delivers
+vault content; the obsidian-vault skill ensures it renders correctly.
+
+**Detection:** Look for `vault_*` tools (e.g. `vault_read_note`,
+`vault_search`, `vault_write_note`) in the available tool list. These tools
+are typically pre-allowed and never trigger permission prompts.
+
+**Capabilities (23 tools across 7 categories):**
+- **CRUD:** `vault_read_note`, `vault_write_note`, `vault_patch_note`,
+  `vault_replace_in_note`, `vault_list_notes`, `vault_delete_note`
+- **Search:** `vault_search` (full-text with BM25 ranking),
+  `vault_search_by_tag`, `vault_search_by_folder`,
+  `vault_search_by_property`, `vault_recent_notes`
+- **Properties:** `vault_update_properties`, `vault_list_property_keys`,
+  `vault_list_property_values`
+- **Graph:** `vault_get_backlinks`, `vault_get_outgoing_links`,
+  `vault_find_orphans`
+- **Memory:** `vault_get_memory`, `vault_update_memory` (About Me/ files)
+- **Daily notes:** `vault_get_daily_note`
+- **Tags:** `vault_list_tags`
+
+**When to prefer over direct file ops:**
+- All vault reads and writes — pre-allowed, no permission prompts
+- Full-text search (BM25 ranking beats Grep for relevance)
+- Property and tag queries across the vault
+- Backlink/outgoing-link discovery
+- Surgical note edits via `vault_patch_note` (heading-targeted append,
+  prepend, replace) and `vault_replace_in_note`
+- Convention detection — `vault_search_by_property`, `vault_list_tags`,
+  and `vault_get_memory` can surface vault conventions faster than
+  scanning files manually
+
+**When direct file ops are still better:**
+- Bulk operations across many files (Grep + Edit in one pass)
+- Creating files outside the vault
+- Working with non-markdown files
+
+### 4. Obsidian REST API + MCP Tools (Legacy Alternative)
 
 The `obsidian-local-rest-api` community plugin exposes a REST API, and the
 `mcp-tools` Obsidian plugin (or a dedicated MCP server) makes those
-endpoints available as MCP tools. This works in both Cowork and Claude Code,
-and is the path for the few operations that genuinely need Obsidian
-interaction beyond direct file ops.
+endpoints available as MCP tools.
 
 **Requirements:**
 - `obsidian-local-rest-api` plugin installed and enabled in Obsidian
@@ -97,10 +137,10 @@ interaction beyond direct file ops.
 
 **When to use:**
 - Triggering Templater template execution programmatically (the one thing
-  direct file ops genuinely can't do)
+  direct file ops and Vault Cortex genuinely can't do — requires a running
+  Obsidian instance)
 - Showing a file in Obsidian from a sandboxed session (where CLI isn't
   available)
-- Searching the vault when Grep isn't sufficient (smart/semantic search)
 
 ---
 
@@ -110,30 +150,34 @@ At the start of a vault session, determine which tools are available:
 
 | Check | How | Result |
 |---|---|---|
-| Direct file ops | Always available | ✓ primary tool |
+| Vault Cortex | Look for `vault_read_note`, `vault_search`, etc. in tool list | ✓ preferred for all vault I/O when available |
+| Direct file ops | Always available | ✓ primary fallback, always works |
 | Obsidian CLI | Try `obsidian --version` in shell | Nice-to-have in Claude Code |
-| MCP tools | Check for `mcp__obsidian-mcp-tools__*` tools in the tool list | Nice-to-have for template execution |
+| REST API MCP | Check for `mcp__obsidian-mcp-tools__*` tools in the tool list | Nice-to-have for template execution |
 
-If only direct file ops are available, that covers the vast majority of
-vault work. The main things you genuinely can't do without CLI/MCP are:
-opening notes in Obsidian for the user and executing Templater templates
-programmatically.
+If Vault Cortex tools are available, prefer them for all vault reads,
+writes, and searches — they're pre-allowed and never trigger permission
+prompts. Fall back to direct file ops for bulk operations or when Vault
+Cortex is unavailable. If only direct file ops are available, that still
+covers the vast majority of vault work.
 
 ---
 
 ## Decision Matrix
 
-| Task | Tool | Notes |
-|---|---|---|
-| Create a new note | Direct file ops | — |
-| Edit note content | Direct file ops | — |
-| Read a note | Direct file ops | — |
-| Search vault | Grep | CLI/MCP search available as supplements |
-| Rename/move a note | Direct file ops (rename + Grep + Edit for links) | CLI `obsidian move` is a convenience for single files, not a requirement |
-| Create/complete tasks with dates | Direct file ops (write emoji dates directly) | Plugin auto-dates via CLI are redundant when agents write the dates themselves |
-| Append to a heading | Direct file ops (find heading, insert after) | — |
-| Open note in Obsidian | CLI `obsidian open` or MCP `show_file_in_obsidian` | Only operation that requires CLI/MCP |
-| Execute a Templater template | MCP `execute_template` | Only operation that requires MCP |
+| Task | With Vault Cortex | Without Vault Cortex | Notes |
+|---|---|---|---|
+| Create a new note | `vault_write_note` | Direct file ops | — |
+| Edit note content | `vault_patch_note` / `vault_replace_in_note` | Direct file ops | Vault Cortex offers heading-targeted edits |
+| Read a note | `vault_read_note` | Direct file ops | — |
+| Search vault | `vault_search` | Grep | BM25 ranking beats Grep for relevance |
+| Search by tag/property | `vault_search_by_tag` / `vault_search_by_property` | Grep | Structured queries without parsing frontmatter |
+| Discover backlinks | `vault_get_backlinks` | Grep for `[[note-name` | — |
+| Rename/move a note | Direct file ops (rename + Grep + Edit) | Same | Vault Cortex doesn't handle renames |
+| Create/complete tasks | Direct file ops (write emoji dates) | Same | Write dates directly in either case |
+| Detect conventions | `vault_get_memory` + `vault_search_by_property` | Read files manually | Faster with Vault Cortex |
+| Open note in Obsidian | CLI `obsidian open` or REST API MCP | Same | Requires local Obsidian |
+| Execute Templater template | REST API MCP `execute_template` | Same | Only operation requiring REST API MCP |
 
 ---
 
@@ -141,10 +185,13 @@ programmatically.
 
 Some workflows benefit from combining tiers:
 
-1. **Create + open:** Direct file ops to create the note, then CLI/MCP to
-   open it in Obsidian for the user
-2. **Search + edit:** Grep to find relevant notes, then direct file ops to
-   read and edit them
-3. **Bulk rename:** Direct rename of files + Grep to find all references +
+1. **Search + edit (Vault Cortex):** `vault_search` to find relevant notes,
+   then `vault_patch_note` for heading-targeted edits
+2. **Convention detection (Vault Cortex):** `vault_get_memory` for user
+   preferences, `vault_search_by_property` to scan frontmatter schemas,
+   `vault_list_tags` for tag taxonomy
+3. **Create + open:** `vault_write_note` (or direct file ops) to create the
+   note, then CLI/MCP to open it in Obsidian for the user
+4. **Bulk rename:** Direct rename of files + Grep to find all references +
    batch Edit to update links — handles hundreds of files in one pass,
    often faster than one-at-a-time CLI renames
