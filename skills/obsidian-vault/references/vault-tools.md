@@ -73,10 +73,11 @@ without access to the user's Obsidian instance).
 
 ### 3. Vault Cortex MCP (Works in Any Environment — Recommended When Available)
 
-[Vault Cortex](https://github.com/aliasunder/vault-cortex) is a remote MCP
-server that exposes your vault over HTTPS. It works from anywhere — local
-or remote — without requiring Obsidian to be running. Vault Cortex delivers
-vault content; the obsidian-vault skill ensures it renders correctly.
+[Vault Cortex](https://github.com/aliasunder/vault-cortex) is an MCP server
+that gives agents access to your vault without requiring Obsidian to be
+running. Deploy it locally via Docker or remotely on a VPS — either way,
+it works directly with vault files on disk. Vault Cortex delivers vault
+content; the obsidian-vault skill ensures it renders correctly.
 
 **Detection:** Look for `vault_*` tools (e.g. `vault_read_note`,
 `vault_search`, `vault_write_note`) in the available tool list. MCP tools
