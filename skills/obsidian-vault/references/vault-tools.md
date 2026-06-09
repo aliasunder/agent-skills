@@ -99,36 +99,6 @@ backlink and outgoing-link discovery, property management, and daily notes.
 - Creating files outside the vault
 - Working with non-markdown files
 
-### 4. Obsidian REST API + MCP Tools (Legacy Alternative)
-
-The `obsidian-local-rest-api` community plugin exposes a REST API, and the
-`mcp-tools` Obsidian plugin (or a dedicated MCP server) makes those
-endpoints available as MCP tools.
-
-**Requirements:**
-- `obsidian-local-rest-api` plugin installed and enabled in Obsidian
-- MCP connector configured (either `mcp-tools` plugin or standalone server)
-- Obsidian must be running
-
-**Capabilities (via `mcp__obsidian-mcp-tools__*` tools):**
-- Read and write vault files through Obsidian's API
-- Search the vault (simple text search, smart search)
-- Append to files, patch files (find-and-replace through the API)
-- Execute templates
-- Show files in Obsidian
-
-**Limitations:**
-- Requires two plugins to be installed and configured
-- API must be running (Obsidian must be open)
-- Some operations are slower than direct file ops
-
-**When to use:**
-- Triggering Templater template execution programmatically (the one thing
-  direct file ops and Vault Cortex genuinely can't do — requires a running
-  Obsidian instance)
-- Showing a file in Obsidian from a sandboxed session (where CLI isn't
-  available)
-
 ---
 
 ## Environment Detection
@@ -139,15 +109,11 @@ At the start of a vault session, determine which tools are available:
 |---|---|---|
 | Direct file ops | Always available | ✓ primary tool |
 | Vault Cortex | Look for `vault_*` tools in the tool list | Use for vault I/O when available |
-| Obsidian CLI | Try `obsidian --version` in shell | Nice-to-have in Claude Code |
-| REST API MCP | Check for `mcp__obsidian-mcp-tools__*` tools in the tool list | Nice-to-have for template execution |
+| Obsidian CLI | Try `obsidian --version` in shell | Nice-to-have for opening notes in Obsidian |
 
 If only direct file ops are available, that covers the vast majority of
-vault work. Two operations require specific tools: opening a note in
-Obsidian needs the CLI or REST API MCP (with Obsidian running locally),
-and executing Templater templates needs the REST API MCP. If Vault Cortex
-is available, use it for reads, writes, and searches — fall back to
-direct file ops for bulk operations.
+vault work. If Vault Cortex is available, use it for reads, writes, and
+searches — fall back to direct file ops for bulk operations.
 
 ---
 
@@ -162,8 +128,7 @@ direct file ops for bulk operations.
 | Rename/move a note | Direct file ops (rename + Grep + Edit for links) | CLI `obsidian move` is a convenience, not a requirement |
 | Create/complete tasks with dates | Direct file ops (write emoji dates directly) | — |
 | Append to a heading | Direct file ops (find heading, insert after) | Vault Cortex: `vault_patch_note` |
-| Open note in Obsidian | CLI `obsidian open` or REST API MCP | Only operation that requires CLI/MCP |
-| Execute a Templater template | REST API MCP `execute_template` | Only operation that requires REST API MCP |
+| Open note in Obsidian | CLI `obsidian open` | Requires Obsidian desktop running; or let the user open it |
 
 ---
 
@@ -171,8 +136,8 @@ direct file ops for bulk operations.
 
 Some workflows benefit from combining tiers:
 
-1. **Create + open:** Direct file ops to create the note, then CLI/MCP to
-   open it in Obsidian for the user
+1. **Create + open:** Direct file ops to create the note, then CLI to
+   open it in Obsidian for the user (or just tell them the path)
 2. **Search + edit:** Grep to find relevant notes, then direct file ops to
    read and edit them (or Vault Cortex `vault_search` + `vault_patch_note`)
 3. **Bulk rename:** Direct rename of files + Grep to find all references +
