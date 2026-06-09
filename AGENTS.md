@@ -4,89 +4,70 @@ This file provides guidance to Claude Code (claude.ai/code), Codex CLI, and othe
 
 ## Project Overview
 
-`cowork-plugins` is a collection of plugins for **Cowork** and **Claude Code**. Plugins extend what Claude can do by adding skills (specialized capabilities) and commands (slash-command workflows).
-
-This is a public marketplace installed via **Settings > Plugins > Add marketplace** using `aliasunder/cowork-plugins`.
+`agent-skills` is a collection of agent skills — packaged instructions that extend AI coding agents with specialized capabilities. Install via `npx skills add aliasunder/agent-skills`.
 
 ## Repository Structure
 
 ```
-cowork-plugins/
-  README.md                             # Project overview and install instructions
-  CONTRIBUTING.md                       # Release process and CI docs
-  LICENSE                               # MIT license
-  .claude-plugin/marketplace.json       # Marketplace config (version, plugin list)
+agent-skills/
+  README.md
+  CONTRIBUTING.md
+  LICENSE
+  package.json
+  skills/
+    <skill-name>/
+      SKILL.md                          # Skill definition (frontmatter: name, description)
+      references/                       # Detailed reference docs loaded on demand
+      assets/                           # Static files (dashboards, templates)
+  evals/
+    <skill-name>/                       # Test scenarios and results
   .github/workflows/
     auto_release.yml                    # Tag-triggered build + GitHub release
     manual_release.yml                  # UI-triggered version bump + release
-  <plugin-name>/
-    .claude-plugin/plugin.json          # Required: name, version, description
-    skills/<skill-name>/SKILL.md        # Skill definition files
-    commands/                           # Slash command files
-    assets/                             # Static files (dashboards, templates)
 ```
 
-### Current Plugins
+### Current Skills
 
-|Plugin        |Directory        |Description                                                                                                                                                                       |
-|--------------|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|Trip Planner  |`trip-planner/`  |Multi-week trip planning across 15+ sessions with cross-validated research, budget tracking, printable daily cards, and phase-based workflow                                      |
-|Obsidian Vault|`obsidian-vault/`|Vault-aware editing for Obsidian. Detects conventions, understands Dataview, Tasks, Kanban, Meta Bind, and Templater interactions, and keeps notes connected, queryable, and safe.|
+| Skill | Directory | Description |
+|-------|-----------|-------------|
+| Trip Planner | `skills/trip-planner/` | Multi-week trip planning across 15+ sessions with cross-validated research, budget tracking, printable daily cards, and phase-based workflow |
+| Obsidian Vault | `skills/obsidian-vault/` | Vault-aware editing for Obsidian. Detects conventions, understands Dataview, Tasks, Kanban, Meta Bind, and Templater interactions, and keeps notes connected, queryable, and safe. |
 
-## Plugin Architecture
+## Skill Architecture
 
-Each plugin lives in its own top-level directory. Both Cowork and Claude Code discover plugins automatically via `.claude-plugin/plugin.json`.
+Skills are discovered by `npx skills` scanning `skills/*/SKILL.md`. Each SKILL.md has YAML frontmatter with:
 
-### plugin.json
+- `name` — must match parent directory, lowercase letters/numbers/hyphens
+- `description` — explains what the skill does and when it should activate
 
-Required fields:
+The body contains the operational instructions: workflow steps, conventions, reference file loading triggers, and safe output rules.
 
-- `name` — display name
-- `version` — semver
-- `description` — short description
-
-### Skills (`skills/<skill-name>/SKILL.md`)
-
-Skills are specialized capabilities loaded by Claude when a task matches the skill’s description. Each skill has:
-
-- A descriptive header
-- Trigger conditions
-- Step-by-step workflow instructions
-
-### Commands (`commands/`)
-
-Slash commands are workflow files invoked explicitly by the user.
+Reference files (`references/*.md`) are loaded on demand — only when the agent enters a task that needs them. This keeps the core SKILL.md lean while having deep guidance available.
 
 ## Development Guidelines
 
-- Each plugin is self-contained in its own top-level directory
-- No build system or package manager — plugins are markdown/JSON files
-- Follow existing plugin structure when adding new plugins
-- Use the `trip-planner/` plugin as a reference implementation
-- `.claude-plugin/plugin.json` is required for plugin discovery
+- Each skill is self-contained in `skills/<name>/`
+- No build system or package manager — skills are markdown files
+- Follow existing skill structure when adding new skills
+- SKILL.md frontmatter must have `name` and `description`
+- Use the `trip-planner/` skill as a reference implementation
 
 ## Releasing
 
-All plugins share a single version. Two CI workflows handle releases:
+All skills share a single version in `package.json`. Two CI workflows handle releases:
 
-- **`/release [patch|minor|major]`** (`.claude/commands/release.md`): Bumps version across all config files, commits, tags, and pushes. The Auto Release workflow then handles the build + GitHub release.
-- **Manual Release** (`manual_release.yml`): Triggered from Actions UI. Pick patch/minor/major → bumps all version files → commits → tags → builds `.skill` artifacts → creates GitHub release.
-- **Auto Release** (`auto_release.yml`): Triggered by `v*` tag push. Validates version files match the tag → builds artifacts → creates GitHub release.
+- **`/release [patch|minor|major]`** (`.claude/commands/release.md`): Bumps version in `package.json`, commits, tags, and pushes. The Auto Release workflow then handles the build + GitHub release.
+- **Manual Release** (`manual_release.yml`): Triggered from Actions UI. Pick patch/minor/major → bumps `package.json` → commits → tags → builds `.zip` archives → creates GitHub release.
+- **Auto Release** (`auto_release.yml`): Triggered by `v*` tag push. Validates `package.json` version matches the tag → builds archives → creates GitHub release.
 
-### Version files (must stay in sync)
+### Version file
 
-- `.claude-plugin/marketplace.json` → `metadata.version` + each `plugins[].version`
-- `<plugin>/.claude-plugin/plugin.json` → `version`
-- `package.json` → `version`
+Version lives in one place: `package.json` → `version`.
 
 See `CONTRIBUTING.md` for full details.
 
-## Adding a New Plugin
+## Adding a New Skill
 
-1. Create a top-level directory: `my-plugin/`
-1. Add `.claude-plugin/plugin.json` with name, version, and description matching the current marketplace version
-1. Add skills under `skills/<skill-name>/SKILL.md`
-1. Add the plugin entry to `.claude-plugin/marketplace.json`
-1. Add commands under `commands/` if needed
-1. Add static assets under `assets/` if needed
-1. Document the plugin in the root `README.md` plugins table
+1. Create `skills/my-skill/SKILL.md` with `name` and `description` in frontmatter
+2. Add reference files under `skills/my-skill/references/` if needed
+3. Update the root `README.md` skills table

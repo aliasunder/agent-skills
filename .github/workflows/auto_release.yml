@@ -18,52 +18,16 @@ jobs:
         id: tag
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Validate versions match tag
+      - name: Validate version matches tag
         env:
           TAG_VERSION: ${{ steps.tag.outputs.version }}
         run: |
-          ERRORS=""
-
-          # Check marketplace.json metadata.version
-          MKT_VERSION=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
-          if [ "$MKT_VERSION" != "$TAG_VERSION" ]; then
-            ERRORS+="  .claude-plugin/marketplace.json metadata.version: $MKT_VERSION\n"
-          fi
-
-          # Check each marketplace plugin entry version
-          PLUGIN_COUNT=$(jq '.plugins | length' .claude-plugin/marketplace.json)
-          for i in $(seq 0 $((PLUGIN_COUNT - 1))); do
-            NAME=$(jq -r ".plugins[$i].name" .claude-plugin/marketplace.json)
-            VER=$(jq -r ".plugins[$i].version" .claude-plugin/marketplace.json)
-            if [ "$VER" != "$TAG_VERSION" ]; then
-              ERRORS+="  .claude-plugin/marketplace.json plugins[$i] ($NAME): $VER\n"
-            fi
-          done
-
-          # Check each plugin's plugin.json
-          while IFS= read -r PLUGIN_JSON; do
-            PLUGIN_DIR=$(dirname "$(dirname "$PLUGIN_JSON")")
-            VER=$(jq -r '.version' "$PLUGIN_JSON")
-            if [ "$VER" != "$TAG_VERSION" ]; then
-              ERRORS+="  $PLUGIN_JSON: $VER\n"
-            fi
-          done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
-
-          # Check package.json
-          if [ -f package.json ]; then
-            PKG_VERSION=$(jq -r '.version' package.json)
-            if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
-              ERRORS+="  package.json: $PKG_VERSION\n"
-            fi
-          fi
-
-          if [ -n "$ERRORS" ]; then
-            echo "::error::Version mismatch! Tag is v$TAG_VERSION but these files differ:"
-            echo -e "$ERRORS"
+          PKG_VERSION=$(jq -r '.version' package.json)
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::Version mismatch! Tag is v$TAG_VERSION but package.json has $PKG_VERSION"
             exit 1
           fi
-
-          echo "All versions match v$TAG_VERSION"
+          echo "Version matches v$TAG_VERSION"
 
   release:
     needs: validate
@@ -81,28 +45,21 @@ jobs:
         id: notes
         run: |
           NOTES=$(bash .github/scripts/generate-notes.sh "$GITHUB_REF_NAME")
-          # Write to file for multi-line handling
           echo "$NOTES" > /tmp/release-notes.md
 
       - name: Build artifacts
         run: |
-          while IFS= read -r PLUGIN_JSON; do
-            PLUGIN_DIR=$(dirname "$(dirname "$PLUGIN_JSON")")
-            PLUGIN_NAME=$(basename "$PLUGIN_DIR")
-
-            echo "Building $PLUGIN_NAME.skill..."
-            (cd "$PLUGIN_DIR/skills" && zip -r "../../${PLUGIN_NAME}.skill" "$PLUGIN_NAME/")
-
-            echo "Building $PLUGIN_NAME.zip..."
-            (cd "$PLUGIN_DIR" && zip -r "../${PLUGIN_NAME}.zip" . \
-              -x "evals/*" "dist/*" ".gitignore")
-          done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
+          for SKILL_DIR in skills/*/; do
+            SKILL_NAME=$(basename "$SKILL_DIR")
+            echo "Building $SKILL_NAME.zip..."
+            (cd skills && zip -r "../${SKILL_NAME}.zip" "$SKILL_NAME/")
+          done
 
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          ARTIFACTS=$(find . -maxdepth 1 \( -name '*.skill' -o -name '*.zip' \) -print)
+          ARTIFACTS=$(find . -maxdepth 1 -name '*.zip' -print)
           gh release create "$GITHUB_REF_NAME" $ARTIFACTS \
             --title "$GITHUB_REF_NAME" \
             --notes-file /tmp/release-notes.md

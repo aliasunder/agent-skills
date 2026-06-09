@@ -25,13 +25,13 @@ The skill triggers when Claude is working with `.md` files in a project that liv
 
 ## Getting started
 
-Install in Cowork or Claude Code:
+Install via npx:
 
-1. Open **Settings > Plugins**
-2. Click **Add marketplace** and enter `aliasunder/cowork-plugins`
-3. Enable **obsidian-vault**
+```bash
+npx skills add aliasunder/agent-skills --skill obsidian-vault
+```
 
-To start using it: just work with notes in your vault. The skill triggers whenever it detects an Obsidian vault in your project. The first time, Claude will read your plugin configs and existing notes, confirm your conventions with you, and persist everything — including a CLAUDE.md callout that keeps the skill active in future sessions. From there, every note Claude creates or edits follows your vault's patterns.
+To start using it: just work with notes in your vault. The skill triggers whenever it detects an Obsidian vault in your project. The first time, the agent will read your plugin configs and existing notes, confirm your conventions with you, and persist everything — including a CLAUDE.md callout that keeps the skill active in future sessions. From there, every note the agent creates or edits follows your vault's patterns.
 
 To skip the detection step and have the skill active from your very first interaction, add this to your project instructions:
 
@@ -40,13 +40,13 @@ This project lives inside an Obsidian vault. Always invoke the
 obsidian-vault:obsidian-vault skill before working with any .md files.
 ```
 
-## Why a plugin?
+## Why a skill?
 
-Obsidian isn't just markdown. Between Obsidian-flavored syntax, community plugin conventions, and the non-obvious ways plugins interact with each other, there's a lot of knowledge Claude needs to get your notes right.
+Obsidian isn't just markdown. Between Obsidian-flavored syntax, community plugin conventions, and the non-obvious ways plugins interact with each other, there's a lot of knowledge an agent needs to get your notes right.
 
-Without the plugin, that knowledge either lives in every project's CLAUDE.md or it doesn't exist at all. The plugin carries it so your CLAUDE.md can focus on your project.
+Without the skill, that knowledge either lives in every project's CLAUDE.md or it doesn't exist at all. The skill carries it so your CLAUDE.md can focus on your project.
 
-## Plugin coverage
+## Coverage
 
 Reference documentation for the following, loaded on demand as needed:
 
@@ -63,7 +63,6 @@ PRs welcome — especially for additional plugin conventions (Excalidraw, Obsidi
 ### File structure
 
 ```
-.claude-plugin/plugin.json
 skills/obsidian-vault/
   SKILL.md
   references/

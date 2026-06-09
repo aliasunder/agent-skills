@@ -1,31 +1,24 @@
 {
-  "name": "cowork-plugins",
-  "version": "0.6.2",
-  "description": "Plugins for Claude Cowork & Claude Code — trip planner, Obsidian vault, and more",
+  "name": "agent-skills",
+  "version": "1.0.0",
+  "description": "Agent skills for AI coding agents — trip planner, Obsidian vault, and more",
   "keywords": [
-    "obsidian",
+    "agent-skills",
+    "npx-skills",
     "ai-agents",
-    "claude",
-    "obsidian-vault",
     "ai-tools",
+    "obsidian",
+    "obsidian-vault",
     "travel-planning",
     "prompt-engineering",
-    "claude-desktop",
-    "agent-skills",
     "claude-code",
-    "claude-code-plugin",
-    "claude-skills",
-    "claude-marketplace",
-    "claude-plugins",
-    "claude-cowork",
-    "claude-cowork-plugin"
+    "claude-skills"
   ],
-  "homepage": "https://github.com/aliasunder/cowork-plugins",
+  "homepage": "https://github.com/aliasunder/agent-skills",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aliasunder/cowork-plugins.git"
+    "url": "https://github.com/aliasunder/agent-skills.git"
   },
   "license": "MIT",
-  "author": "aliasunder",
-  "private": true
+  "author": "aliasunder"
 }

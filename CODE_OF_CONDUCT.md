@@ -45,9 +45,9 @@ an individual is officially representing the community in public spaces.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by [opening a GitHub issue](https://github.com/aliasunder/cowork-plugins/issues/new?labels=conduct)
+reported by [opening a GitHub issue](https://github.com/aliasunder/agent-skills/issues/new?labels=conduct)
 with the label **conduct**. If you need to report privately, you can use
-[GitHub's private vulnerability reporting](https://github.com/aliasunder/cowork-plugins/security/advisories/new)
+[GitHub's private vulnerability reporting](https://github.com/aliasunder/agent-skills/security/advisories/new)
 to reach the maintainer confidentially.
 
 All complaints will be reviewed and investigated promptly and fairly.

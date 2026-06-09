@@ -2,8 +2,8 @@
 
 ## Scope
 
-This repository contains Cowork and Claude Code plugins — markdown skill files,
-JSON configuration, and shell-based CI workflows. There is no runtime server or
+This repository contains agent skills — markdown skill files and shell-based
+CI workflows. There is no runtime server or
 compiled application code.
 
 Security concerns here typically involve:
@@ -15,7 +15,7 @@ Security concerns here typically involve:
 ## Reporting a Vulnerability
 
 If you discover a security issue, please report it through
-[GitHub's private vulnerability reporting](https://github.com/aliasunder/cowork-plugins/security/advisories/new)
+[GitHub's private vulnerability reporting](https://github.com/aliasunder/agent-skills/security/advisories/new)
 rather than opening a public issue.
 
 Please include:

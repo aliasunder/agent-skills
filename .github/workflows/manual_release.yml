@@ -28,7 +28,7 @@ jobs:
         env:
           BUMP: ${{ inputs.bump }}
         run: |
-          CURRENT=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+          CURRENT=$(jq -r '.version' package.json)
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
 
           case "$BUMP" in
@@ -41,27 +41,12 @@ jobs:
           echo "version=$NEXT" >> "$GITHUB_OUTPUT"
           echo "Bumping $CURRENT → $NEXT ($BUMP)"
 
-      - name: Update version files
+      - name: Update version
         env:
           NEXT: ${{ steps.next.outputs.version }}
         run: |
-          # Update marketplace.json
-          jq --arg v "$NEXT" '
-            .metadata.version = $v |
-            .plugins[].version = $v
-          ' .claude-plugin/marketplace.json > tmp.json && mv tmp.json .claude-plugin/marketplace.json
-
-          # Update each plugin's plugin.json
-          while IFS= read -r PLUGIN_JSON; do
-            jq --arg v "$NEXT" '.version = $v' "$PLUGIN_JSON" > tmp.json && mv tmp.json "$PLUGIN_JSON"
-            echo "Updated $PLUGIN_JSON → $NEXT"
-          done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
-
-          # Update package.json
-          if [ -f package.json ]; then
-            jq --arg v "$NEXT" '.version = $v' package.json > tmp.json && mv tmp.json package.json
-            echo "Updated package.json → $NEXT"
-          fi
+          jq --arg v "$NEXT" '.version = $v' package.json > tmp.json && mv tmp.json package.json
+          echo "Updated package.json → $NEXT"
 
       - name: Generate release notes
         run: |
@@ -85,24 +70,18 @@ jobs:
 
       - name: Build artifacts
         run: |
-          while IFS= read -r PLUGIN_JSON; do
-            PLUGIN_DIR=$(dirname "$(dirname "$PLUGIN_JSON")")
-            PLUGIN_NAME=$(basename "$PLUGIN_DIR")
-
-            echo "Building $PLUGIN_NAME.skill..."
-            (cd "$PLUGIN_DIR/skills" && zip -r "../../${PLUGIN_NAME}.skill" "$PLUGIN_NAME/")
-
-            echo "Building $PLUGIN_NAME.zip..."
-            (cd "$PLUGIN_DIR" && zip -r "../${PLUGIN_NAME}.zip" . \
-              -x "evals/*" "dist/*" ".gitignore")
-          done < <(find . -path '*/.claude-plugin/plugin.json' -not -path './.claude-plugin/*')
+          for SKILL_DIR in skills/*/; do
+            SKILL_NAME=$(basename "$SKILL_DIR")
+            echo "Building $SKILL_NAME.zip..."
+            (cd skills && zip -r "../${SKILL_NAME}.zip" "$SKILL_NAME/")
+          done
 
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           NEXT: ${{ steps.next.outputs.version }}
         run: |
-          ARTIFACTS=$(find . -maxdepth 1 \( -name '*.skill' -o -name '*.zip' \) -print)
+          ARTIFACTS=$(find . -maxdepth 1 -name '*.zip' -print)
           gh release create "v${NEXT}" $ARTIFACTS \
             --title "v${NEXT}" \
             --notes-file /tmp/release-notes.md

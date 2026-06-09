@@ -37,28 +37,28 @@ Detailed methodology lives in `references/` files that get loaded on demand — 
 
 ## Getting started
 
-Install in Cowork or Claude Code:
+Install via npx:
 
-1. Open **Settings > Plugins**
-2. Click **Add marketplace** and enter `aliasunder/cowork-plugins`
-3. Enable **trip-planner**
+```bash
+npx skills add aliasunder/agent-skills --skill trip-planner
+```
 
-To start planning: just tell Claude you want to plan a trip. The skill auto-triggers whenever it detects a trip planning project in your working directory, or when you mention anything related to travel planning. The first time, Claude will ask about who's traveling, when, where, and your budget. Everything else flows from there.
+To start planning: just tell your agent you want to plan a trip. The skill auto-triggers whenever it detects a trip planning project in your working directory, or when you mention anything related to travel planning. The first time, the agent will ask about who's traveling, when, where, and your budget. Everything else flows from there.
 
-## Why a plugin?
+## Why a skill?
 
-Multi-week trips can run across 10-20 planning sessions. The plugin encodes planning methodology — research cross-validation, budget conventions, session handoffs, deliverable production, phase sequencing — refined over 25+ sessions of planning a real two-week trip. The core skill is ~320 lines; the rest lives in reference files that only load when needed (starting a research task, producing a deliverable, updating the budget).
+Multi-week trips can run across 10-20 planning sessions. The skill encodes planning methodology — research cross-validation, budget conventions, session handoffs, deliverable production, phase sequencing — refined over 25+ sessions of planning a real two-week trip. The core skill is ~320 lines; the rest lives in reference files that only load when needed (starting a research task, producing a deliverable, updating the budget).
 
-Your project files stay focused on your trip. The planning process stays in the plugin, out of your way. Install, say "plan a trip," and the whole system is there.
+Your project files stay focused on your trip. The planning process stays in the skill, out of your way. Install, say "plan a trip," and the whole system is there.
 
-The project the plugin creates — CLAUDE.md, TASKS.md, memory structure, file conventions — stands on its own. CLAUDE.md acts as **agent working memory** with file maps, traveler profiles, preferences, and session pointers. TASKS.md tracks what's active, blocked, and done. If you open the folder in Claude Code or a future session without the plugin, the project context still works. The plugin adds the methodology layer on top.
+The project the skill creates — CLAUDE.md, TASKS.md, memory structure, file conventions — stands on its own. CLAUDE.md acts as **agent working memory** with file maps, traveler profiles, preferences, and session pointers. TASKS.md tracks what's active, blocked, and done. If you open the folder in a future session without the skill, the project context still works. The skill adds the methodology layer on top.
 
 ## Design rationale
 
 <details>
 <summary>Why a single orchestrator, not multiple skills</summary>
 
-Most plugins use a **toolkit pattern** — a collection of independent skills where each handles one task (review code, run incident response, research hotels). That works well when skills are genuinely independent.
+Most skill repos use a **toolkit pattern** — a collection of independent skills where each handles one task (review code, run incident response, research hotels). That works well when skills are genuinely independent.
 
 Trip planning is different. It's a **sequential, phase-dependent workflow** that runs across many sessions: you can't research restaurants before choosing cities, can't build an itinerary before booking hotels, and every session needs to pick up exactly where the last one left off. A multi-skill approach (separate skills for setup, research, itinerary building, session management) breaks down because:
 
@@ -70,7 +70,7 @@ The orchestrator pattern solves this by putting the full workflow context — ph
 
 **When to use which pattern:**
 
-- **Toolkit (multiple skills):** Independent capabilities that don't depend on each other. Good for: engineering plugins (code-review, incident-response), productivity tools.
+- **Toolkit (multiple skills):** Independent capabilities that don't depend on each other. Good for: engineering tools (code-review, incident-response), productivity skills.
 - **Orchestrator (single skill + references):** Sequential workflows with phase dependencies and multi-session state. Good for: project management, trip planning, any multi-week planning process.
 
 </details>
@@ -81,14 +81,13 @@ The orchestrator pattern solves this by putting the full workflow context — ph
 - **File boundary rules.** CLAUDE.md is a lean index (~200-300 lines), not a knowledge base. People details live in `memory/people/`, booking details in `memory/projects/`, methodology in the skill. This prevents the common failure mode where CLAUDE.md becomes a 500-line dump of everything.
 - **Research → Guide pipeline.** Research files are broad comparisons. Guides are curated picks created *after* the user approves recommendations. This prevents premature commitment and gives the user a decision point.
 - **Booking philosophy gathered early.** Flexibility vs cost, hotel star preference, refundability appetite — gathered in Phase 1 because it shapes every downstream booking decision.
-- **Project stands alone.** The CLAUDE.md, TASKS.md, and memory structure the plugin creates work independently of the plugin. Open the folder in Claude Code or any future session and the project context is there — the plugin adds methodology, not lock-in.
+- **Project stands alone.** The CLAUDE.md, TASKS.md, and memory structure the skill creates work independently of the skill. Open the folder in any future session and the project context is there — the skill adds methodology, not lock-in.
 
 </details>
 
 ## Structure
 
 ```
-.claude-plugin/plugin.json            # Plugin manifest
 skills/trip-planner/
   SKILL.md                            # Core skill — phases, session protocol, file conventions
   references/
@@ -98,11 +97,10 @@ skills/trip-planner/
     phase-guide.md                    # Detailed per-phase guidance
     tasks-and-dashboard.md            # TASKS.md format and dashboard setup
     known-issues.md                   # Compatibility pitfalls
-assets/
-  dashboard.html                      # Standalone kanban board for TASKS.md
-evals/                                # Test scenarios and results (see evals/README.md)
+  assets/
+    dashboard.html                    # Standalone kanban board for TASKS.md
 ```
 
 ## Evals
 
-See `evals/README.md` for how the skill was tested and how to interpret results.
+See the `evals/trip-planner/` directory at the repository root for test scenarios and results.

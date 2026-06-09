@@ -29,9 +29,9 @@
 - Delete SECURITY.md
 - Update issue templates
 
-All notable changes to this project are documented here. This marketplace
-contains multiple plugins — changes are grouped by version with affected
-plugins noted.
+All notable changes to this project are documented here. This collection
+contains multiple skills — changes are grouped by version with affected
+skills noted.
 
 ## [0.6.0] — 2026-04-30
 

@@ -5,3 +5,7 @@ __pycache__/
 CLAUDE.local.md
 .llms-local/
 .serena/
+TASKS.md
+dist/
+*.skill
+*.zip
