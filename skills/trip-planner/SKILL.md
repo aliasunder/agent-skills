@@ -2,17 +2,14 @@
 name: trip-planner
 description: >
   Plan a real trip. Use for: hotel/flight/train/restaurant research for specific destinations and dates,
-  creating travel documents (daily cards, itineraries, packing lists, offline guides), managing booking changes
-  or cancellations, and resuming a trip project with CLAUDE.md/TASKS.md/memory/ files. Handles the full travel
-  planning lifecycle — transport routes, accommodation search, activity planning, restaurant scouting, budget
-  tracking, and printable traveler materials. NOT for: presentations, file conversions, sending emails,
-  building apps, or hypothetical travel questions.
-
-  ALWAYS use this skill when working in a trip planning project — detected by the presence of CLAUDE.md with
-  traveler profiles, an itinerary phase marker, or a memory/ directory with trip planning files. Also trigger
-  when the user says anything like "plan a trip", "start a session", "what should I work on", "research hotels",
-  "find restaurants", "build the itinerary", "make daily cards", "create packing list", or any travel planning task.
-  If a trip project exists in the working directory, this skill should be active — period.
+  creating travel documents (daily cards, itineraries, packing lists, offline guides), managing booking
+  changes or cancellations, and resuming a trip project with CLAUDE.md/TASKS.md/memory/ files. Handles
+  the full lifecycle — transport, accommodation, activities, restaurants, budget tracking, and printable
+  traveler materials. ALWAYS use this skill in a trip planning project — detected by a CLAUDE.md with
+  traveler profiles, an itinerary phase marker, or a memory/ directory with trip planning files. Also
+  trigger on "plan a trip", "start a session", "research hotels", "find restaurants", "build the
+  itinerary", "make daily cards", "create packing list", or any travel planning task. NOT for:
+  presentations, file conversions, sending emails, building apps, or hypothetical travel questions.
 ---
 
 # Trip Orchestrator
