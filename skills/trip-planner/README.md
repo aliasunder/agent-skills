@@ -18,6 +18,8 @@ Plan a multi-week trip with Claude that actually remembers everything between se
 
 **Visual task dashboard.** A standalone kanban board that reads your task file, so you can see what's active, waiting, and done at a glance.
 
+**Convention-aware.** If your project already has conventions — an Obsidian Kanban task board, a specific session-log schema, your own date formats — the skill detects and follows them instead of imposing its defaults.
+
 ## How it works
 
 The skill defines 8 planning phases:
@@ -33,7 +35,7 @@ The skill defines 8 planning phases:
 
 Each session follows a rhythm: **orient** (read project state, last session log, check email, summarize) → **work** → **close** (write session log, update project index, reconcile tasks).
 
-Detailed methodology lives in `references/` files that get loaded on demand — only when the agent enters a research task, creates a deliverable, or updates the budget. This keeps the core skill lean (~320 lines) while having deep guidance available when needed.
+Detailed methodology lives in `references/` files that get loaded on demand — only when the agent enters a research task, creates a deliverable, or updates the budget. This keeps the core skill lean while having deep guidance available when needed.
 
 ## Getting started
 
@@ -47,11 +49,11 @@ To start planning: just tell your agent you want to plan a trip. The skill auto-
 
 ## Why a skill?
 
-Multi-week trips can run across 10-20 planning sessions. The skill encodes planning methodology — research cross-validation, budget conventions, session handoffs, deliverable production, phase sequencing — refined over 25+ sessions of planning a real two-week trip. The core skill is ~320 lines; the rest lives in reference files that only load when needed (starting a research task, producing a deliverable, updating the budget).
+Multi-week trips can run across 10-20 planning sessions. The skill encodes planning methodology — research cross-validation, budget conventions, session handoffs, deliverable production, phase sequencing — refined over 25+ sessions of planning a real two-week trip. The core skill stays lean; detailed methodology lives in reference files that only load when needed (starting a research task, producing a deliverable, updating the budget).
 
 Your project files stay focused on your trip. The planning process stays in the skill, out of your way. Install, say "plan a trip," and the whole system is there.
 
-The project the skill creates — CLAUDE.md, TASKS.md, memory structure, file conventions — stands on its own. CLAUDE.md acts as **agent working memory** with file maps, traveler profiles, preferences, and session pointers. TASKS.md tracks what's active, blocked, and done. If you open the folder in a future session without the skill, the project context still works. The skill adds the methodology layer on top.
+The project the skill creates — CLAUDE.md, TASKS.md, memory structure, file conventions — stands on its own. CLAUDE.md acts as **agent working memory** with file maps, traveler profiles, preferences, and session pointers. TASKS.md tracks what's active, blocked, and done. If you open the folder in a future session without the skill, the project context still works. The skill adds the methodology layer on top. And the formats it prescribes are defaults, not mandates — conventions recorded in your project's CLAUDE.md override them.
 
 ## Design rationale
 

@@ -55,7 +55,7 @@ When the user signals they're done:
 
 1. **Write a session log** to `memory/sessions/YYYY-MM-DD-session-log-{letter}.md` (e.g., `2026-04-28-session-log-a.md`; subsequent same-day sessions increment to `-b`, `-c`, etc.):
 
-   If the project's CLAUDE.md specifies a session log frontmatter convention (e.g., for Obsidian or another tool), follow it. Otherwise, start with a markdown heading (`# Session Log — YYYY-MM-DD (a)`).
+   Session log format follows the conventions-override rule (see Working Principles → On conventions): if the project's CLAUDE.md specifies a session log frontmatter convention (e.g., for Obsidian or another tool), follow it. Otherwise, start with a markdown heading (`# Session Log — YYYY-MM-DD (a)`).
 
    Required sections:
    - **Summary**: 2-3 sentences
@@ -72,7 +72,7 @@ When the user signals they're done:
    - Update budget numbers if bookings were made
 
 3. **Reconcile TASKS.md**:
-   - **Move completed tasks to the Done section** with a completion date and strikethrough. Don't just check the checkbox — physically move the task line from its current section (Active, Waiting On, etc.) to the Done section. Format: `- [x] ~~Task title~~ (YYYY-MM-DD)`
+   - **Move completed tasks to the Done section** — this always applies, whatever the format. Don't just check the checkbox — physically move the task line from its current section (Active, Waiting On, etc.) to the Done section. For the *completion syntax*, check CLAUDE.md Conventions first (e.g., Tasks-plugin `✅ YYYY-MM-DD` emoji dates for an Obsidian Kanban board); the default is `- [x] ~~Task title~~ (YYYY-MM-DD)`
    - Add any new tasks that emerged to the appropriate section
    - When the last subtask of a parent task is done, close the parent task immediately and move it to Done — don't wait to be asked
    - Reorder "Up Next" based on current priorities
@@ -271,7 +271,7 @@ If no CLAUDE.md exists:
 3. **Detect task management tool** — ask the user how they prefer to manage tasks:
 
    - **Bundled dashboard** (default) — copy `assets/dashboard.html` to the project root. TASKS.md uses plain markdown sections (`## Active`, `## Done`, etc.).
-   - **Own tool** — the user already has a task/kanban tool (e.g., an Obsidian plugin, a VS Code extension, a standalone app). Skip `dashboard.html`. Ask the user if TASKS.md needs any special formatting for their tool — if so, format it accordingly; otherwise use plain markdown sections.
+   - **Own tool** — the user already has a task/kanban tool (e.g., an Obsidian plugin, a VS Code extension, a standalone app). Skip `dashboard.html`. Follow the detect → confirm → persist process in `references/tasks-and-dashboard.md` → "Option 2: Own Tool": check what's already established (existing TASKS.md structure, a CLAUDE.md Conventions section), confirm the format with the user, and persist it in CLAUDE.md marked as an override of the trip-planner default.
 
    Store the choice in CLAUDE.md under `Preferences` (e.g., `Task management: Obsidian Kanban`, `Task management: bundled dashboard`). Read `references/tasks-and-dashboard.md` for the default TASKS.md format.
 
@@ -301,7 +301,8 @@ If no CLAUDE.md exists:
    If the skill was not invoked this session, at minimum:
    - Write a session log to memory/sessions/
    - Update CLAUDE.md (last session pointer, file map, resolved items)
-   - Reconcile TASKS.md (move completed tasks to Done with date + strikethrough)
+   - Reconcile TASKS.md (move completed tasks to Done; use the completion
+     format from CLAUDE.md Conventions, default: date + strikethrough)
    ```
    Project instructions are loaded into every session regardless of skill activation — they act as a safety net for session discipline.
 
@@ -311,6 +312,8 @@ If no CLAUDE.md exists:
 
 These are lessons from real multi-session trip planning:
 
+**On conventions: project CLAUDE.md overrides skill defaults.** The formats this skill prescribes — TASKS.md structure, task completion syntax, session log frontmatter, date formats, file naming, link style — are defaults, not mandates. If the project's CLAUDE.md specifies a convention (typically in a `Conventions` section, often marked "(overrides trip-planner default)"), follow it instead. Check before writing, not after. One thing is never overridable: completed tasks physically move to the Done section/lane — position is the source of truth. Only the *syntax* of completion varies by convention. See `references/tasks-and-dashboard.md` → "Convention Overrides" for the detect → confirm → persist process.
+
 **On research:** Always cross-validate across multiple sources. Don't trust a single source for ratings, hours, or accessibility claims. Don't filter out options by cost alone during research — present the full range and let the user decide. When the user has a star preference (e.g., 3-4 star), use it as the primary filter but don't rigidly exclude properties above that range if they're price-competitive. A 5-star hotel at a 4-star price is a win — include it in the research with a note explaining why it's there despite being above the stated range. The goal is to filter *for* the user's budget and taste, not to gatekeep options they'd obviously want to see. Read `references/research-methodology.md` for the full process.
 
 **On the research → guide pipeline:** Research files are broad and comparative — all options considered, rated, and organized. Guides are curated verdicts created *after* the user has reviewed recommendations and made decisions. The flow is: create research file → present recommendations to the user inline (in day-by-day context for restaurants/activities) → get feedback and decisions → then create the curated guide. Never create a guide before the user has weighed in on the research. **Research files and guide files always coexist** — the research is the evidence, the guide is the verdict. When creating a guide after user approval, never delete, overwrite, or replace the research file. Both stay in their respective directories (`memory/research/` and `memory/guides/`).
@@ -319,7 +322,7 @@ These are lessons from real multi-session trip planning:
 
 **On session continuity:** Session logs are the primary handoff mechanism. Every session that makes progress must end with a log. CLAUDE.md is the index. Keep it under ~300 lines.
 
-**On task management:** Read `references/tasks-and-dashboard.md` for the TASKS.md format. Key rule: completed tasks get moved to the Done section with a date and strikethrough — not just checkbox-checked.
+**On task management:** Read `references/tasks-and-dashboard.md` for the TASKS.md format. Key rule: completed tasks get *moved* to the Done section — not just checkbox-checked. Completion syntax (date + strikethrough by default) follows CLAUDE.md Conventions if the project overrides it.
 
 **On archiving:** When an option is rejected or superseded, move it to `archive/` with a note on why. This prevents revisiting dead ends and preserves the decision history.
 
@@ -329,7 +332,8 @@ These are lessons from real multi-session trip planning:
 
 Each file type has a distinct role. Avoid duplicating information across files — put it in one place and point to it from elsewhere.
 
-**CLAUDE.md — Agent working memory (~200-300 lines max)**
+#### CLAUDE.md — Agent working memory (~200-300 lines max)
+
 This is the project's working memory — a quick-reference index, not a knowledge base. It contains:
 - **Skill invocation callout** (at the very top, before any content sections): A blockquote instructing the agent to invoke `trip-planner:trip-planner` at session start. This is the most reliable triggering mechanism — CLAUDE.md is always read, so the callout ensures the skill activates regardless of how the agent interprets the task. See "Starting a New Trip" step 4 for the exact template.
 - **Me**: One-line trip summary (who, where, when)
@@ -351,6 +355,7 @@ This is the project's working memory — a quick-reference index, not a knowledg
 - **Projects**: One-line project summary with link to full project file.
 - **Trip Planning Status**: Current phase, last session pointer, trip snapshot table (dates, cities, budget booked/total), open questions, recently resolved items.
 - **Preferences**: Project-wide conventions (currency, units, booking philosophy). NOT per-traveler preferences — those go in people profiles.
+- **Conventions** (optional): Project-level format overrides of trip-planner defaults (task completion syntax, session log frontmatter, date formats, link style). When present, these win over the skill's defaults — see Working Principles → On conventions.
 - **File Map**: What exists and *when to read it*. The file map is the most important navigational tool in the project. Each entry should tell you not just what a file contains, but when you'd reach for it. Use a "When to read" column with bold triggers.
 
   **Example — effective file map entry:**
@@ -366,10 +371,12 @@ This is the project's working memory — a quick-reference index, not a knowledg
 
 CLAUDE.md should NOT contain: session protocols (the skill provides these), planning methodology, phase descriptions, research guidelines, task management rules, or any "how to plan" content. The skill provides all of that. CLAUDE.md is purely project state.
 
-**memory/people/{name}.md — Traveler profiles**
+#### memory/people/{name}.md — Traveler profiles
+
 Everything about a specific traveler: health/mobility details, dietary needs and how strict, travel anxieties, interests, aesthetic preferences, non-negotiables, past travel experience. This is the authoritative source — CLAUDE.md only has a summary pointer.
 
-**memory/projects/{trip-name}.md — Project file (booking details + decisions)**
+#### memory/projects/{trip-name}.md — Project file (booking details + decisions)
+
 The operational backbone. Contains:
 - Trip snapshot (mirrors CLAUDE.md but this is where it's maintained)
 - Strategic decisions with rationale (why this route, why this hotel, etc.)
@@ -380,7 +387,8 @@ The operational backbone. Contains:
 
 This file grows as the project progresses. It's where all the "what did we actually book and why" lives.
 
-**memory/itinerary.md — Day-by-day operational schedule**
+#### memory/itinerary.md — Day-by-day operational schedule
+
 The single source of truth for what happens each day: accommodation, transport, activities, meals, with budget line items and booking status.
 
 ### Directory Conventions
