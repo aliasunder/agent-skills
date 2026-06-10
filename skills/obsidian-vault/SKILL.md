@@ -2,30 +2,20 @@
 name: obsidian-vault
 description: >
   Create, edit, and audit notes in an Obsidian vault. Handles frontmatter
-  properties, wikilinks, markdown links, embeds, callouts, tasks, block
-  references, tags, and Mermaid diagrams. Plugin-aware: Dataview queries
-  and inline fields, Tasks plugin emoji syntax, Kanban board editing,
-  Meta Bind INPUT/VIEW/BUTTON fields, Templater templates, Bases property
-  schemas, and Canvas JSON.
-
-  ALWAYS-ON RULE: If the working directory is inside an Obsidian vault
-  (detected by a .obsidian/ directory in the working directory or any
-  ancestor, or a CLAUDE.md that identifies the project as vault-embedded),
-  this skill should be active for ALL .md file operations — including
-  CLAUDE.md, TASKS.md, session logs, and operational docs. The user does
-  not need to mention Obsidian; the vault context is implicit.
-
-  Trigger phrases: "create a note", "edit this note", "update frontmatter",
-  "add a property", "add tags", "fix the links", "write a Dataview query",
-  "fix this callout", "add a task", "edit my Kanban board", "create a
-  daily note", "make a template", "update my dashboard", "organize my
-  notes", or any note-editing task in a vault context.
-
-  NOT for: .md files outside an Obsidian vault (READMEs in code repos,
-  GitHub issue bodies, static-site content like Hugo or Jekyll, project
-  documentation in non-vault repos), generic markdown linting unrelated
-  to Obsidian rendering, or Obsidian plugin development (that is a
-  separate TypeScript skill).
+  properties, wikilinks, embeds, callouts, tasks, block references, tags,
+  and Mermaid diagrams. Plugin-aware: Dataview queries and inline fields,
+  Tasks emoji syntax, Kanban boards, Meta Bind fields, Templater templates,
+  Bases schemas, and Canvas JSON. ALWAYS-ON: if the working directory is
+  inside an Obsidian vault (a .obsidian/ directory in any ancestor, or a
+  CLAUDE.md identifying the project as vault-embedded), use this skill for
+  ALL .md file operations — including CLAUDE.md, TASKS.md, and session
+  logs — even when Obsidian isn't mentioned. Triggers: "create/edit a
+  note", "update frontmatter", "add tags", "fix the links", "write a
+  Dataview query", "fix this callout", "add a task", "edit my Kanban
+  board", "make a template", or any note-editing task in a vault. NOT
+  for: .md files outside a vault (code-repo READMEs, GitHub issues,
+  static-site content), generic markdown linting, or Obsidian plugin
+  development.
 ---
 
 # Obsidian Vault Skill
