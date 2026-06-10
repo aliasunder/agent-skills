@@ -1,6 +1,17 @@
 # Changelog
 
 
+## [1.1.0] — 2026-06-10
+
+### Features
+
+- **trip-planner:** Defer to project CLAUDE.md convention overrides (#3)
+
+### Bug Fixes
+
+- Add default to manual release bump type so patch is selectable
+
+
 ## [1.0.1] — 2026-06-09
 
 ### Bug Fixes
