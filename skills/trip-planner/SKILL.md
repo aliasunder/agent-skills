@@ -332,7 +332,8 @@ These are lessons from real multi-session trip planning:
 
 Each file type has a distinct role. Avoid duplicating information across files — put it in one place and point to it from elsewhere.
 
-**CLAUDE.md — Agent working memory (~200-300 lines max)**
+#### CLAUDE.md — Agent working memory (~200-300 lines max)
+
 This is the project's working memory — a quick-reference index, not a knowledge base. It contains:
 - **Skill invocation callout** (at the very top, before any content sections): A blockquote instructing the agent to invoke `trip-planner:trip-planner` at session start. This is the most reliable triggering mechanism — CLAUDE.md is always read, so the callout ensures the skill activates regardless of how the agent interprets the task. See "Starting a New Trip" step 4 for the exact template.
 - **Me**: One-line trip summary (who, where, when)
@@ -370,10 +371,12 @@ This is the project's working memory — a quick-reference index, not a knowledg
 
 CLAUDE.md should NOT contain: session protocols (the skill provides these), planning methodology, phase descriptions, research guidelines, task management rules, or any "how to plan" content. The skill provides all of that. CLAUDE.md is purely project state.
 
-**memory/people/{name}.md — Traveler profiles**
+#### memory/people/{name}.md — Traveler profiles
+
 Everything about a specific traveler: health/mobility details, dietary needs and how strict, travel anxieties, interests, aesthetic preferences, non-negotiables, past travel experience. This is the authoritative source — CLAUDE.md only has a summary pointer.
 
-**memory/projects/{trip-name}.md — Project file (booking details + decisions)**
+#### memory/projects/{trip-name}.md — Project file (booking details + decisions)
+
 The operational backbone. Contains:
 - Trip snapshot (mirrors CLAUDE.md but this is where it's maintained)
 - Strategic decisions with rationale (why this route, why this hotel, etc.)
@@ -384,7 +387,8 @@ The operational backbone. Contains:
 
 This file grows as the project progresses. It's where all the "what did we actually book and why" lives.
 
-**memory/itinerary.md — Day-by-day operational schedule**
+#### memory/itinerary.md — Day-by-day operational schedule
+
 The single source of truth for what happens each day: accommodation, transport, activities, meals, with budget line items and booking status.
 
 ### Directory Conventions
