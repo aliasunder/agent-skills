@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [1.1.1] — 2026-06-10
+
+### Bug Fixes
+
+- Condense SKILL.md descriptions to fit 1024-char upload limit (#4)
+
+
 ## [1.1.0] — 2026-06-10
 
 ### Features
