@@ -86,8 +86,8 @@ which often require manual approval for each invocation.
 **Capabilities:**
 - **Read** — full content, heading outline with byte sizes (`outline: true`),
   single section by heading (`heading: "..."`), or properties only
-  (`properties_only: true`). Use targeted modes for large notes like
-  TASKS.md boards to avoid loading the Done column.
+  (`properties_only: true`). Use targeted modes for large notes to avoid
+  pulling sections you don't need into context.
 - **Write** — create new notes with frontmatter and body content
 - **Search** — full-text (ranked by relevance), by tag, by property, by folder
 - **Edit** — heading-targeted patches (append, prepend, replace within a
@@ -145,30 +145,35 @@ searches — fall back to direct file ops for bulk operations.
 
 ## Reading Large Notes
 
-Notes like TASKS.md boards accumulate content in their Done section over
-time. Instead of reading the full file (where Done can be 80%+ of the
-content), use `vault_read_note` modes to read only what you need:
+Some notes grow large over time — Kanban boards with a long Done section,
+meeting logs, reference docs with extensive archives. Instead of reading
+the full file, use `vault_read_note` modes to read only what you need:
 
 1. **`outline: true`** — returns the heading tree with byte sizes per
-   section, so you can see the board structure without loading content
-2. **`heading: "Active"`** — returns just one section (heading line + body
-   through the next same-or-higher-level heading)
-3. **`properties_only: true`** — returns just the frontmatter as JSON
+   section. See the note's structure without loading any body content.
+2. **`heading: "Section Name"`** — returns just one section (heading line +
+   body through the next same-or-higher-level heading).
+3. **`properties_only: true`** — returns just the frontmatter as JSON.
 
-**Recommended workflow for TASKS.md at session start:**
-1. `vault_read_note` with `outline: true` to see lane sizes
-2. Read active lanes individually (`heading: "Active"`,
-   `heading: "Up Next"`, etc.)
-3. Skip Done — it's historical and grows large
+**Recommended workflow for large structured notes:**
+1. `vault_read_note` with `outline: true` to see section sizes and identify
+   which parts you actually need
+2. Read relevant sections individually with `heading: "..."`
+3. Skip sections that are historical or irrelevant to the current task
 
-**When modifying a board (Kanban moves):**
-1. `vault_read_note` with `heading` to read the source lane and verify
-   exact card text
+**Example — Kanban board at session start:**
+A board with Active, Up Next, Waiting On, Someday, and Done lanes may have
+80%+ of its bytes in Done. Read the active lanes individually instead of
+the full file:
+1. `outline: true` → see lane sizes
+2. `heading: "Active"`, `heading: "Up Next"` → read what matters
+3. Skip Done unless you specifically need completed-task history
+
+**When modifying a section (e.g. Kanban moves, appending to a log):**
+1. `vault_read_note` with `heading` to read the target section and verify
+   exact content before editing
 2. Use `outline: true` if you need to confirm overall section layout
-3. Proceed with `vault_replace_in_note` + `vault_patch_note` for the move
-
-These modes also work for any large note — long reference docs, session
-log archives, or notes with large completed-task sections.
+3. Proceed with `vault_replace_in_note` + `vault_patch_note` for the edit
 
 ---
 
