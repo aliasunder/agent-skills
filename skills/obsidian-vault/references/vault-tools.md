@@ -84,10 +84,8 @@ can be easily marked as allowed in agent settings, unlike shell commands
 which often require manual approval for each invocation.
 
 **Capabilities:**
-- **Read** — full content, heading outline with byte sizes (`outline: true`),
-  single section by heading (`heading: "..."`), or properties only
-  (`properties_only: true`). Use targeted modes for large notes to avoid
-  pulling sections you don't need into context.
+- **Read** — full note, individual sections, heading outlines, or
+  properties only (see `vault_read_note` tool description for modes)
 - **Write** — create new notes with frontmatter and body content
 - **Search** — full-text (ranked by relevance), by tag, by property, by folder
 - **Edit** — heading-targeted patches (append, prepend, replace within a
@@ -102,8 +100,6 @@ which often require manual approval for each invocation.
 - Heading-targeted edits (no need to find and match text manually)
 - Convention detection — search by property, list tags, and retrieve
   user preferences faster than scanning files manually
-- Targeted reads of large notes — `outline`, `heading`, and
-  `properties_only` modes avoid loading entire files into context
 
 **When direct file ops are still better:**
 - Bulk operations across many files (Grep + Edit in one pass)
@@ -134,7 +130,7 @@ searches — fall back to direct file ops for bulk operations.
 |---|---|---|
 | Create a new note | Direct file ops | Vault Cortex: `vault_write_note` |
 | Edit note content | Direct file ops | Vault Cortex: `vault_patch_note` for heading-targeted edits |
-| Read a note | Direct file ops | Vault Cortex: `vault_read_note` (full, `outline`, `heading`, or `properties_only`) |
+| Read a note | Direct file ops | Vault Cortex: `vault_read_note` (supports targeted read modes) |
 | Search vault | Grep | Vault Cortex: `vault_search` (ranked by relevance) |
 | Rename/move a note | Direct file ops (rename + Grep + Edit for links) | CLI `obsidian move` is a convenience, not a requirement |
 | Create/complete tasks with dates | Direct file ops (write emoji dates directly) | — |
@@ -146,34 +142,28 @@ searches — fall back to direct file ops for bulk operations.
 ## Reading Large Notes
 
 Some notes grow large over time — Kanban boards with a long Done section,
-meeting logs, reference docs with extensive archives. Instead of reading
-the full file, use `vault_read_note` modes to read only what you need:
+meeting logs, reference docs with extensive archives. Reading the full file
+wastes context on content you don't need. The principle is the same
+regardless of tooling: check the note's structure first, then read only
+the sections that matter.
 
-1. **`outline: true`** — returns the heading tree with byte sizes per
-   section. See the note's structure without loading any body content.
-2. **`heading: "Section Name"`** — returns just one section (heading line +
-   body through the next same-or-higher-level heading).
-3. **`properties_only: true`** — returns just the frontmatter as JSON.
+**With direct file ops:**
+- Grep for heading markers (`^## `) to see the note's section structure
+- Use `Read` with `offset` and `limit` to read specific line ranges
+- Count lines first (`wc -l`) to gauge overall size
 
-**Recommended workflow for large structured notes:**
-1. `vault_read_note` with `outline: true` to see section sizes and identify
-   which parts you actually need
-2. Read relevant sections individually with `heading: "..."`
-3. Skip sections that are historical or irrelevant to the current task
+**With Vault Cortex:**
+- `vault_read_note` has built-in modes for outline, single-section, and
+  properties-only reads — check the tool description for parameters
 
-**Example — Kanban board at session start:**
-A board with Active, Up Next, Waiting On, Someday, and Done lanes may have
-80%+ of its bytes in Done. Read the active lanes individually instead of
-the full file:
-1. `outline: true` → see lane sizes
-2. `heading: "Active"`, `heading: "Up Next"` → read what matters
-3. Skip Done unless you specifically need completed-task history
-
-**When modifying a section (e.g. Kanban moves, appending to a log):**
-1. `vault_read_note` with `heading` to read the target section and verify
-   exact content before editing
-2. Use `outline: true` if you need to confirm overall section layout
-3. Proceed with `vault_replace_in_note` + `vault_patch_note` for the edit
+**Common patterns:**
+- **Kanban boards** — the Done lane often holds 80%+ of the file's content.
+  Read the active lanes individually; skip Done unless you need
+  completed-task history.
+- **Meeting logs / journals** — read recent entries by heading; skip older
+  sections.
+- **Large reference docs** — read the specific topic section rather than
+  the full document.
 
 ---
 
