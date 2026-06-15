@@ -83,12 +83,18 @@ content; the obsidian-vault skill ensures it renders correctly.
 can be easily marked as allowed in agent settings, unlike shell commands
 which often require manual approval for each invocation.
 
-**Capabilities:** Read (full content, heading outline with byte sizes,
-single section by heading, or properties only — use targeted reads for
-large notes like TASKS.md boards to avoid loading the Done column), write,
-search (full-text and by tag/property/folder), heading-targeted edits
-(append, prepend, replace within a section), backlink and outgoing-link
-discovery, property management, and daily notes.
+**Capabilities:**
+- **Read** — full content, heading outline with byte sizes (`outline: true`),
+  single section by heading (`heading: "..."`), or properties only
+  (`properties_only: true`). Use targeted modes for large notes like
+  TASKS.md boards to avoid loading the Done column.
+- **Write** — create new notes with frontmatter and body content
+- **Search** — full-text (ranked by relevance), by tag, by property, by folder
+- **Edit** — heading-targeted patches (append, prepend, replace within a
+  section) and find-and-replace
+- **Graph** — backlink and outgoing-link discovery
+- **Properties** — read and update frontmatter properties
+- **Daily notes** — read today's daily note
 
 **When to prefer over direct file ops:**
 - Full-text search (ranked by relevance, better than Grep for discovery)
