@@ -83,9 +83,12 @@ content; the obsidian-vault skill ensures it renders correctly.
 can be easily marked as allowed in agent settings, unlike shell commands
 which often require manual approval for each invocation.
 
-**Capabilities:** Read, write, search (full-text and by tag/property/folder),
-heading-targeted edits (append, prepend, replace within a section),
-backlink and outgoing-link discovery, property management, and daily notes.
+**Capabilities:** Read (full content, heading outline with byte sizes,
+single section by heading, or properties only — use targeted reads for
+large notes like TASKS.md boards to avoid loading the Done column), write,
+search (full-text and by tag/property/folder), heading-targeted edits
+(append, prepend, replace within a section), backlink and outgoing-link
+discovery, property management, and daily notes.
 
 **When to prefer over direct file ops:**
 - Full-text search (ranked by relevance, better than Grep for discovery)
@@ -93,6 +96,8 @@ backlink and outgoing-link discovery, property management, and daily notes.
 - Heading-targeted edits (no need to find and match text manually)
 - Convention detection — search by property, list tags, and retrieve
   user preferences faster than scanning files manually
+- Targeted reads of large notes — `outline`, `heading`, and
+  `properties_only` modes avoid loading entire files into context
 
 **When direct file ops are still better:**
 - Bulk operations across many files (Grep + Edit in one pass)
@@ -123,12 +128,41 @@ searches — fall back to direct file ops for bulk operations.
 |---|---|---|
 | Create a new note | Direct file ops | Vault Cortex: `vault_write_note` |
 | Edit note content | Direct file ops | Vault Cortex: `vault_patch_note` for heading-targeted edits |
-| Read a note | Direct file ops | Vault Cortex: `vault_read_note` |
+| Read a note | Direct file ops | Vault Cortex: `vault_read_note` (full, `outline`, `heading`, or `properties_only`) |
 | Search vault | Grep | Vault Cortex: `vault_search` (ranked by relevance) |
 | Rename/move a note | Direct file ops (rename + Grep + Edit for links) | CLI `obsidian move` is a convenience, not a requirement |
 | Create/complete tasks with dates | Direct file ops (write emoji dates directly) | — |
 | Append to a heading | Direct file ops (find heading, insert after) | Vault Cortex: `vault_patch_note` |
 | Open note in Obsidian | CLI `obsidian open` | Requires Obsidian desktop running; or let the user open it |
+
+---
+
+## Reading Large Notes
+
+Notes like TASKS.md boards accumulate content in their Done section over
+time. Instead of reading the full file (where Done can be 80%+ of the
+content), use `vault_read_note` modes to read only what you need:
+
+1. **`outline: true`** — returns the heading tree with byte sizes per
+   section, so you can see the board structure without loading content
+2. **`heading: "Active"`** — returns just one section (heading line + body
+   through the next same-or-higher-level heading)
+3. **`properties_only: true`** — returns just the frontmatter as JSON
+
+**Recommended workflow for TASKS.md at session start:**
+1. `vault_read_note` with `outline: true` to see lane sizes
+2. Read active lanes individually (`heading: "Active"`,
+   `heading: "Up Next"`, etc.)
+3. Skip Done — it's historical and grows large
+
+**When modifying a board (Kanban moves):**
+1. `vault_read_note` with `heading` to read the source lane and verify
+   exact card text
+2. Use `outline: true` if you need to confirm overall section layout
+3. Proceed with `vault_replace_in_note` + `vault_patch_note` for the move
+
+These modes also work for any large note — long reference docs, session
+log archives, or notes with large completed-task sections.
 
 ---
 
