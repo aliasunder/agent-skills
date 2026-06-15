@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [1.1.2] — 2026-06-15
+
+### Documentation
+
+- **obsidian-vault:** Document vault_read_note modes in vault-tools reference (#5)
+
+
 ## [1.1.1] — 2026-06-10
 
 ### Bug Fixes
