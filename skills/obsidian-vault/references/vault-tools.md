@@ -83,9 +83,16 @@ content; the obsidian-vault skill ensures it renders correctly.
 can be easily marked as allowed in agent settings, unlike shell commands
 which often require manual approval for each invocation.
 
-**Capabilities:** Read, write, search (full-text and by tag/property/folder),
-heading-targeted edits (append, prepend, replace within a section),
-backlink and outgoing-link discovery, property management, and daily notes.
+**Capabilities:**
+- **Read** — full note, individual sections, heading outlines, or
+  properties only (see `vault_read_note` tool description for modes)
+- **Write** — create new notes with frontmatter and body content
+- **Search** — full-text (ranked by relevance), by tag, by property, by folder
+- **Edit** — heading-targeted patches (append, prepend, replace within a
+  section) and find-and-replace
+- **Graph** — backlink and outgoing-link discovery
+- **Properties** — read and update frontmatter properties
+- **Daily notes** — read today's daily note
 
 **When to prefer over direct file ops:**
 - Full-text search (ranked by relevance, better than Grep for discovery)
@@ -123,12 +130,40 @@ searches — fall back to direct file ops for bulk operations.
 |---|---|---|
 | Create a new note | Direct file ops | Vault Cortex: `vault_write_note` |
 | Edit note content | Direct file ops | Vault Cortex: `vault_patch_note` for heading-targeted edits |
-| Read a note | Direct file ops | Vault Cortex: `vault_read_note` |
+| Read a note | Direct file ops | Vault Cortex: `vault_read_note` (supports targeted read modes) |
 | Search vault | Grep | Vault Cortex: `vault_search` (ranked by relevance) |
 | Rename/move a note | Direct file ops (rename + Grep + Edit for links) | CLI `obsidian move` is a convenience, not a requirement |
 | Create/complete tasks with dates | Direct file ops (write emoji dates directly) | — |
 | Append to a heading | Direct file ops (find heading, insert after) | Vault Cortex: `vault_patch_note` |
 | Open note in Obsidian | CLI `obsidian open` | Requires Obsidian desktop running; or let the user open it |
+
+---
+
+## Reading Large Notes
+
+Some notes grow large over time — Kanban boards with a long Done section,
+meeting logs, reference docs with extensive archives. Reading the full file
+wastes context on content you don't need. The principle is the same
+regardless of tooling: check the note's structure first, then read only
+the sections that matter.
+
+**With direct file ops:**
+- Grep for heading markers (`^## `) to see the note's section structure
+- Use `Read` with `offset` and `limit` to read specific line ranges
+- Count lines first (`wc -l`) to gauge overall size
+
+**With Vault Cortex:**
+- `vault_read_note` has built-in modes for outline, single-section, and
+  properties-only reads — check the tool description for parameters
+
+**Common patterns:**
+- **Kanban boards** — the Done lane often holds 80%+ of the file's content.
+  Read the active lanes individually; skip Done unless you need
+  completed-task history.
+- **Meeting logs / journals** — read recent entries by heading; skip older
+  sections.
+- **Large reference docs** — read the specific topic section rather than
+  the full document.
 
 ---
 
