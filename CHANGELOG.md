@@ -1,6 +1,14 @@
 # Changelog
 
 
+## [1.1.3] — 2026-07-25
+
+### Documentation
+
+- Soften cross-reference wording to "pairs well with" (#7)
+- Cross-reference Vault Cortex in obsidian-vault README entry (#6)
+
+
 ## [1.1.2] — 2026-06-15
 
 ### Documentation
