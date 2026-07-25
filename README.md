@@ -22,7 +22,7 @@ npx skills add aliasunder/agent-skills --list
 | Skill | Description |
 |-------|-------------|
 | [trip-planner](skills/trip-planner/) | Plan a multi-week trip across 15+ sessions without losing context. Cross-validated research, budget tracking, printable daily cards, and a phase-based workflow from first idea to departure day. |
-| [obsidian-vault](skills/obsidian-vault/) | AI that works with Obsidian, not just in it. Detects your vault's conventions, understands how Dataview, Tasks, Kanban, Meta Bind, and Templater interact, and creates or edits notes that are connected, queryable, and safe. Pairs with [Vault Cortex](https://github.com/aliasunder/vault-cortex), an MCP server for agent vault access. |
+| [obsidian-vault](skills/obsidian-vault/) | AI that works with Obsidian, not just in it. Detects your vault's conventions, understands how Dataview, Tasks, Kanban, Meta Bind, and Templater interact, and creates or edits notes that are connected, queryable, and safe. Pairs well with [Vault Cortex](https://github.com/aliasunder/vault-cortex), an MCP server for agent vault access. |
 
 ## Adding a skill
 
