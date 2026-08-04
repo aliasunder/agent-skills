@@ -517,6 +517,11 @@ Rules for either convention:
 - Obsidian resolves both for graph view, backlinks, and autocomplete
 - Wikilinks don't need `.md` extensions; markdown links do
 - Both create backlinks and graph connections
+- **Inside markdown tables, escape the wikilink alias pipe** —
+  `[[Note Name\|Display Text]]` — an unescaped `|` in a table cell is
+  consumed as a column delimiter before the wikilink parser sees it,
+  breaking both the link and the table row. Outside tables, the pipe
+  stays unescaped.
 
 For block references, embeds, and advanced link patterns, read
 `references/syntax.md`.
@@ -613,6 +618,8 @@ Before returning any `.md` file you wrote — whether new or edited — verify:
 - [ ] Tags use correct format (no spaces, nested with `/`)
 - [ ] No unescaped `#` in non-tag contexts (PR numbers, issue refs, heading
       mentions in prose — use `\#` or inline code)
+- [ ] Aliased wikilinks inside markdown tables escape the pipe
+      (`[[Note\|Alias]]`) — unescaped `|` breaks the link and the table row
 - [ ] Inline comments (`%% ... %%`) preserved if present (when editing)
 - [ ] No accidental section duplication (when editing)
 - [ ] Kanban board structure preserved if editing a board file (settings
