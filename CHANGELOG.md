@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [1.1.4] — 2026-08-04
+
+### Documentation
+
+- **obsidian-vault:** Require escaped alias pipe for wikilinks in tables
+
+
 ## [1.1.3] — 2026-07-25
 
 ### Documentation
