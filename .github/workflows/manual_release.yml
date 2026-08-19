@@ -13,8 +13,12 @@ on:
           - minor
           - major
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   release:
@@ -22,13 +26,13 @@ jobs:
     steps:
       - name: Generate app token
         id: app-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         with:
           client-id: ${{ secrets.RELEASE_APP_CLIENT_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
           permission-contents: write
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
@@ -73,7 +77,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add package.json CHANGELOG.md
           git commit -m "release: v${NEXT}"
           git tag "v${NEXT}"
           git push origin HEAD --tags
@@ -83,7 +87,7 @@ jobs:
           for SKILL_DIR in skills/*/; do
             SKILL_NAME=$(basename "$SKILL_DIR")
             echo "Building $SKILL_NAME.zip..."
-            (cd skills && zip -r "../${SKILL_NAME}.zip" "$SKILL_NAME/")
+            (cd skills && zip -r "$GITHUB_WORKSPACE/${SKILL_NAME}.zip" "$SKILL_NAME/")
           done
 
       - name: Create GitHub release
