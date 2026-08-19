@@ -73,10 +73,8 @@ for the `templater-obsidian` folder in `.obsidian/plugins/`.
 <% tp.file.cursor() %>                  Place cursor here after insertion
 <% tp.file.cursor(1) %>                 Numbered cursor position (tab order)
 <% tp.file.tags %>                      All tags on the note
-<% tp.file.aliases %>                   Aliases from frontmatter
-<% tp.file.frontmatter %>               Raw frontmatter as object
-<% tp.file.link() %>                    Link to the current file
-<% await tp.file.exists("path/note") %> Check if a file exists
+<% tp.frontmatter.title %>              Access a frontmatter property
+<% await tp.file.exists("path/note.md") %> Check if a file exists
 <% await tp.file.move("new/path") %>    Move the current file
 ```
 
@@ -324,8 +322,8 @@ Key Templater settings that affect agent behavior:
 | Setting | Impact |
 |---|---|
 | `templates_folder` | Where template files live — do not create templates elsewhere |
-| `trigger_on_file_creation_mode` | Controls auto-template on file creation: `"none"` (off), or mode string. Older vaults may still use the V1 key `trigger_on_file_creation` (boolean) |
-| `folder_templates` | Array of folder → template mappings (replaces V1's `enable_folder_templates` boolean) |
+| `trigger_on_file_creation_mode` | Controls auto-template on file creation: `"none"`, `"folder"`, or `"regex"`. Stored in `templater-local-settings` (not `data.json`). `"folder"`/`"regex"` apply mapped templates only when post-frontmatter content is empty. Older vaults may use the V1 key `trigger_on_file_creation` (boolean) in `data.json` |
+| `folder_templates` | Array of folder → template mappings (used when mode is `"folder"`) |
 | `enable_system_commands` | If false, `tp.system.exec()` won't work |
 | `syntax_highlighting` | Visual only — no functional impact |
 | `user_scripts_folder` | Folder for user-defined script files |
@@ -350,9 +348,9 @@ Key Templater settings that affect agent behavior:
    - The race condition depends on timing: if Templater fires before the
      agent finishes writing, the result is unpredictable
    - **Before creating any file in a vault with Templater installed:** check
-     `.obsidian/plugins/templater-obsidian/data.json` for
-     `trigger_on_file_creation_mode` (V2) or `trigger_on_file_creation` (V1)
-     and `folder_templates` mappings
+     `.obsidian/plugins/templater-obsidian/` for `trigger_on_file_creation_mode`
+     in `templater-local-settings` (V2) or `trigger_on_file_creation` in
+     `data.json` (V1), and `folder_templates` mappings
    - If the target folder has a mapping, either: (a) create the file and let
      the template handle initial content, then append/edit after; or (b) create
      the file in a different folder first, then move it

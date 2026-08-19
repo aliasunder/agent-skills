@@ -268,15 +268,18 @@ a single value — not a list or table.
 
 > **Gotcha — inline code spans starting with `=`:** Dataview intercepts
 > *any* backtick-enclosed text whose first character is `=`, not just
-> intentional queries. A code span like `` `= 5` `` or `` `== null` ``
-> is silently evaluated and renders as a Dataview parse error. This
-> applies regardless of backtick or HTML `<code>` markup — only fenced
-> code blocks are immune.
+> intentional queries. A code span like `` `== null` `` is silently
+> evaluated and renders as a Dataview parse error; `` `= 5` `` silently
+> renders as `5` (a valid DQL numeric literal) instead of showing the
+> code. This applies regardless of backtick or HTML `<code>` markup.
+> Fenced code blocks are also evaluated when `Code block inline queries`
+> is enabled (the default).
 >
 > **Workaround:** restructure so the span doesn't start with `=`:
 > - Comparisons: `a === b`, `x == null` (operand first)
 > - Assignments: `const x = 5` (declaration first)
-> - If `=` genuinely must lead: use a fenced code block instead
+> - If `=` genuinely must lead: disable `Code block inline queries` in
+>   Dataview settings and use a fenced code block
 
 ---
 
@@ -381,5 +384,6 @@ refresh cycle (configurable in Dataview settings, default 2.5 seconds).
 7. **Dates from filenames** — `file.day` only works if the filename is or
    contains a parseable date (e.g., `2025-01-15` or `2025-01-15 Meeting`).
 8. **Inline code spans starting with `=`** — Dataview intercepts these as
-   inline queries, causing parse errors. See Inline DQL Queries → Gotcha
+   inline queries — either rendering a valid result (`` `= 5` `` → `5`)
+   or a parse error (`` `== null` ``). See Inline DQL Queries → Gotcha
    above for workarounds.

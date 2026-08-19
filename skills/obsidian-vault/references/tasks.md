@@ -118,7 +118,8 @@ be filtered with `is not blocked`.
 
 ### On Completion
 
-The `🏁` emoji specifies what happens when a task is completed:
+The `🏁` emoji specifies what happens when a task is completed (requires
+Tasks 7.8.0+):
 
 ```markdown
 - [ ] Leave me alone 🏁 keep
@@ -126,7 +127,9 @@ The `🏁` emoji specifies what happens when a task is completed:
 - [ ] Delete completed instance, keep next recurrence 🔁 every day 📅 2025-02-01 🏁 delete
 ```
 
-- `🏁 keep` — default (same as no `🏁`); completed task stays in the note
+- No `🏁` — default behavior; completed task stays in the note
+- `🏁 keep` — explicit opt-in to the default (functionally identical to
+  omitting `🏁`)
 - `🏁 delete` — the completed task line is **removed from the file entirely**
   (not archived, not moved — deleted)
 
@@ -241,8 +244,9 @@ is recurring
 is not recurring
 is blocked                        Has unmet dependencies
 is not blocked                    All dependencies met
-is blocking                       Has an ID that other tasks depend on
-is not blocking                   No other tasks depend on this one
+is blocking                       Has an ID referenced by another task's ⛔,
+                                  and both have status TODO/IN_PROGRESS/ON_HOLD
+is not blocking                   Not blocking any other task
 ```
 
 **Combining filters:**
