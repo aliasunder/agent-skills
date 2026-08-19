@@ -1,6 +1,19 @@
 # Changelog
 
 
+## [1.2.0] — 2026-08-19
+
+### Documentation
+
+- **obsidian-vault:** Dataview inline-query gotcha + plugin currency sweep (#10)
+
+### CI / Infrastructure
+
+- Align release workflows with vault-onboarding pattern (#11)
+- Scope app token to contents:write only (#9)
+- Use GitHub App token for release workflows (#8)
+
+
 ## [1.1.4] — 2026-08-04
 
 ### Documentation
