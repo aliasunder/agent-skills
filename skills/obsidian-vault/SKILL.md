@@ -618,6 +618,9 @@ Before returning any `.md` file you wrote — whether new or edited — verify:
 - [ ] Tags use correct format (no spaces, nested with `/`)
 - [ ] No unescaped `#` in non-tag contexts (PR numbers, issue refs, heading
       mentions in prose — use `\#` or inline code)
+- [ ] No inline code spans starting with `=` (Dataview evaluates these
+      as inline queries — rewrite with operand first: `a === b` not
+      `` `= 5` ``, or use a fenced code block)
 - [ ] Aliased wikilinks inside markdown tables escape the pipe
       (`[[Note\|Alias]]`) — unescaped `|` breaks the link and the table row
 - [ ] Inline comments (`%% ... %%`) preserved if present (when editing)

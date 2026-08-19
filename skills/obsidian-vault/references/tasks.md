@@ -118,8 +118,17 @@ be filtered with `is not blocked`.
 
 ### On Completion
 
-The Tasks plugin supports an `🏁` (on completion) emoji for triggering actions
-when a task is done. This is a newer feature — check plugin version before using.
+The `🏁` emoji specifies what happens when a task is completed:
+
+```markdown
+- [ ] Leave me alone 🏁 keep
+- [ ] Delete me when done 🏁 delete
+- [ ] Delete completed instance, keep next recurrence 📅 2025-02-01 🔁 every day when done 🏁 delete
+```
+
+- `🏁 keep` — default; completed task stays in place
+- `🏁 delete` — completed instance is removed (useful for recurring tasks
+  where you only want the next occurrence visible)
 
 ---
 
@@ -142,6 +151,7 @@ custom status characters. These are configured in Tasks settings.
 **Status types** determine behavior:
 - **TODO** — counts as "not done" in queries, toggles to next status
 - **IN_PROGRESS** — counts as "not done" but indicates active work
+- **ON_HOLD** — counts as "not done" but indicates deferred/paused work
 - **DONE** — counts as "done", adds completion date if auto-set is on
 - **CANCELLED** — counts as "done" (for filtering purposes), adds cancelled date
 - **NON_TASK** — not treated as a task at all
@@ -220,6 +230,7 @@ is recurring
 is not recurring
 is blocked                        Has unmet dependencies
 is not blocked                    All dependencies met
+is blocking                       Has an ID that other tasks depend on
 ```
 
 **Combining filters:**

@@ -266,6 +266,18 @@ Due date: `= this.due`
 The default prefix is `=` (configurable in Dataview settings). Always produces
 a single value — not a list or table.
 
+> **Gotcha — inline code spans starting with `=`:** Dataview intercepts
+> *any* backtick-enclosed text whose first character is `=`, not just
+> intentional queries. A code span like `` `= 5` `` or `` `== null` ``
+> is silently evaluated and renders as a Dataview parse error. This
+> applies regardless of backtick or HTML `<code>` markup — only fenced
+> code blocks are immune.
+>
+> **Workaround:** restructure so the span doesn't start with `=`:
+> - Comparisons: `a === b`, `x == null` (operand first)
+> - Assignments: `const x = 5` (declaration first)
+> - If `=` genuinely must lead: use a fenced code block instead
+
 ---
 
 ## DataviewJS
@@ -368,3 +380,8 @@ refresh cycle (configurable in Dataview settings, default 2.5 seconds).
    the field shares a line with other content.
 7. **Dates from filenames** — `file.day` only works if the filename is or
    contains a parseable date (e.g., `2025-01-15` or `2025-01-15 Meeting`).
+8. **Inline code spans starting with `=`** — Dataview treats any
+   backtick-enclosed text beginning with `=` as an inline query, even
+   ordinary code like `` `= 5` ``. The result is a parse error in the
+   rendered note. Write expressions with the operand first (`a === b`,
+   `x == null`) or use a fenced code block.
