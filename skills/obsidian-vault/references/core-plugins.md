@@ -120,7 +120,7 @@ If both Daily Notes and Templater are active:
 - The Daily Notes plugin creates the file and applies the template from core
   Templates settings
 - Templater processes `<% %>` syntax in the template if
-  `trigger_on_file_creation` is enabled
+  `trigger_on_file_creation_mode` is active
 - This means daily note templates can use full Templater syntax
 
 ---

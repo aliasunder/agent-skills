@@ -205,7 +205,7 @@ record exists), detect and confirm these conventions before writing anything:
 **6. Template usage:**
 - Is Templater installed? What's the templates folder?
 - Are folder templates configured?
-- Is `trigger_on_file_creation` enabled?
+- Is `trigger_on_file_creation_mode` active (or V1's `trigger_on_file_creation`)?
 - Persist if relevant to file creation
 
 **7. Kanban usage:**

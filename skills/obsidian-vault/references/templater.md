@@ -189,7 +189,7 @@ Without `-%>`, there would be a blank line before "Status:".
 Templater can auto-apply templates to new files based on the folder they're
 created in. Configured in Templater settings → Folder Templates.
 
-When `trigger_on_file_creation` is enabled:
+When `trigger_on_file_creation_mode` is active (not `"none"`):
 - New files in mapped folders automatically have the template applied
 - This runs before the user types anything
 - The template can prompt the user for input during creation
@@ -201,7 +201,7 @@ that the template would provide — it causes duplication.
 ### Sync and Cloud Storage Hazards
 
 If the vault is stored on iCloud Drive, Dropbox, or another sync service,
-`trigger_on_file_creation` can fire unexpectedly:
+`trigger_on_file_creation_mode` can fire unexpectedly:
 
 - **iCloud re-download:** When a file is evicted from local storage and
   re-downloaded, the OS creates it anew — Templater may treat this as a
@@ -213,7 +213,7 @@ If the vault is stored on iCloud Drive, Dropbox, or another sync service,
   when it syncs to another device with Obsidian running
 
 These edge cases are hard to reproduce and easy to miss. If the vault uses
-cloud sync AND `trigger_on_file_creation`, agents should be extra cautious
+cloud sync AND `trigger_on_file_creation_mode` is active, agents should be extra cautious
 about creating files in mapped folders.
 
 ---
@@ -226,7 +226,7 @@ Daily Notes can be configured to use a template. If both core Templates and
 Templater are installed, the template path in Daily Notes settings typically
 points to the core Templates folder. When the daily note is created:
 - Core Templates plugin handles simple `{{date}}` / `{{title}}` placeholders
-- Templater processes `<% %>` syntax if `trigger_on_file_creation` is enabled
+- Templater processes `<% %>` syntax if `trigger_on_file_creation_mode` is active
 
 This means a daily note template can use Templater syntax and it will be
 processed at creation time.
