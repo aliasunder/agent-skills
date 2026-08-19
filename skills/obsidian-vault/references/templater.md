@@ -72,6 +72,10 @@ for the `templater-obsidian` folder in `.obsidian/plugins/`.
 <% tp.file.last_modified_date("YYYY-MM-DD") %>  Last modified date
 <% tp.file.cursor() %>                  Place cursor here after insertion
 <% tp.file.cursor(1) %>                 Numbered cursor position (tab order)
+<% tp.file.tags %>                      All tags on the note
+<% tp.frontmatter.title %>              Access a frontmatter property
+<% await tp.file.exists("path/note.md") %> Check if a file exists
+<% await tp.file.move("new/path") %>    Move the current file
 ```
 
 **Date functions (`tp.date`):**
@@ -183,7 +187,7 @@ Without `-%>`, there would be a blank line before "Status:".
 Templater can auto-apply templates to new files based on the folder they're
 created in. Configured in Templater settings → Folder Templates.
 
-When `trigger_on_file_creation` is enabled:
+When `trigger_on_file_creation_mode` is active (not `"none"`):
 - New files in mapped folders automatically have the template applied
 - This runs before the user types anything
 - The template can prompt the user for input during creation
@@ -195,7 +199,7 @@ that the template would provide — it causes duplication.
 ### Sync and Cloud Storage Hazards
 
 If the vault is stored on iCloud Drive, Dropbox, or another sync service,
-`trigger_on_file_creation` can fire unexpectedly:
+`trigger_on_file_creation_mode` can fire unexpectedly:
 
 - **iCloud re-download:** When a file is evicted from local storage and
   re-downloaded, the OS creates it anew — Templater may treat this as a
@@ -207,7 +211,7 @@ If the vault is stored on iCloud Drive, Dropbox, or another sync service,
   when it syncs to another device with Obsidian running
 
 These edge cases are hard to reproduce and easy to miss. If the vault uses
-cloud sync AND `trigger_on_file_creation`, agents should be extra cautious
+cloud sync AND `trigger_on_file_creation_mode` is active, agents should be extra cautious
 about creating files in mapped folders.
 
 ---
@@ -220,7 +224,7 @@ Daily Notes can be configured to use a template. If both core Templates and
 Templater are installed, the template path in Daily Notes settings typically
 points to the core Templates folder. When the daily note is created:
 - Core Templates plugin handles simple `{{date}}` / `{{title}}` placeholders
-- Templater processes `<% %>` syntax if `trigger_on_file_creation` is enabled
+- Templater processes `<% %>` syntax if `trigger_on_file_creation_mode` is active
 
 This means a daily note template can use Templater syntax and it will be
 processed at creation time.
@@ -318,10 +322,11 @@ Key Templater settings that affect agent behavior:
 | Setting | Impact |
 |---|---|
 | `templates_folder` | Where template files live — do not create templates elsewhere |
-| `trigger_on_file_creation` | If true, new files in mapped folders auto-run templates |
+| `trigger_on_file_creation_mode` | Controls auto-template on file creation: `"none"`, `"folder"`, or `"regex"`. V2 stores this in Obsidian's localStorage (not readable from the filesystem); `data.json` may still carry it for migration. `"folder"`/`"regex"` apply mapped templates only when post-frontmatter content is empty. Older vaults use the V1 key `trigger_on_file_creation` (boolean) in `data.json` |
+| `folder_templates` | Array of folder → template mappings (used when mode is `"folder"`) |
 | `enable_system_commands` | If false, `tp.system.exec()` won't work |
-| `enable_folder_templates` | If true, folder → template mappings are active |
 | `syntax_highlighting` | Visual only — no functional impact |
+| `user_scripts_folder` | Folder for user-defined script files |
 
 ---
 
@@ -334,9 +339,9 @@ Key Templater settings that affect agent behavior:
    a Promise object, not the user's input. Always `await` async functions.
 3. **Blank lines from script blocks** — Use `-%>` to trim trailing newlines on
    `<%* %>` blocks that should produce no output.
-4. **`trigger_on_file_creation` is a critical hazard for agent workflows** —
-   When this setting is enabled, Templater runs a template on EVERY new file
-   created in mapped folders, regardless of how the file was created. This
+4. **`trigger_on_file_creation_mode` is a critical hazard for agent workflows** —
+   When this setting is not `"none"`, Templater runs a template on EVERY new
+   file created in mapped folders, regardless of how the file was created. This
    means:
    - An agent creates a file with content → Templater detects the new file →
      runs the folder template → overwrites or duplicates the agent's content
@@ -344,7 +349,10 @@ Key Templater settings that affect agent behavior:
      agent finishes writing, the result is unpredictable
    - **Before creating any file in a vault with Templater installed:** check
      `.obsidian/plugins/templater-obsidian/data.json` for
-     `trigger_on_file_creation` and `folder_templates` mappings
+     `trigger_on_file_creation_mode` (V2) or `trigger_on_file_creation` (V1),
+     and `folder_templates` mappings. If neither key is in `data.json`
+     (V2 stores the trigger in Obsidian localStorage), check whether
+     `folder_templates` has entries — if it does, assume the hazard is active
    - If the target folder has a mapping, either: (a) create the file and let
      the template handle initial content, then append/edit after; or (b) create
      the file in a different folder first, then move it

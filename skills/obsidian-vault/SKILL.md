@@ -205,7 +205,7 @@ record exists), detect and confirm these conventions before writing anything:
 **6. Template usage:**
 - Is Templater installed? What's the templates folder?
 - Are folder templates configured?
-- Is `trigger_on_file_creation` enabled?
+- Is `trigger_on_file_creation_mode` active (or V1's `trigger_on_file_creation`)?
 - Persist if relevant to file creation
 
 **7. Kanban usage:**
@@ -618,6 +618,10 @@ Before returning any `.md` file you wrote — whether new or edited — verify:
 - [ ] Tags use correct format (no spaces, nested with `/`)
 - [ ] No unescaped `#` in non-tag contexts (PR numbers, issue refs, heading
       mentions in prose — use `\#` or inline code)
+- [ ] No accidental inline code spans starting with `=` in non-query
+      contexts (Dataview evaluates these as inline queries — rewrite
+      ordinary code with operand first: `a === b` not `` `= 5` ``;
+      intentional Dataview queries like `` `= date(today)` `` are fine)
 - [ ] Aliased wikilinks inside markdown tables escape the pipe
       (`[[Note\|Alias]]`) — unescaped `|` breaks the link and the table row
 - [ ] Inline comments (`%% ... %%`) preserved if present (when editing)

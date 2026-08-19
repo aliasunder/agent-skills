@@ -118,8 +118,31 @@ be filtered with `is not blocked`.
 
 ### On Completion
 
-The Tasks plugin supports an `🏁` (on completion) emoji for triggering actions
-when a task is done. This is a newer feature — check plugin version before using.
+The `🏁` emoji specifies what happens when a task is completed (requires
+Tasks 7.8.0+):
+
+```markdown
+- [ ] Leave me alone 🏁 keep
+- [ ] Delete me when done 🏁 delete
+- [ ] Delete completed instance, keep next recurrence 🔁 every day 📅 2025-02-01 🏁 delete
+```
+
+- No `🏁` — default behavior; completed task stays in the note
+- `🏁 keep` — explicit opt-in to the default (functionally identical to
+  omitting `🏁`)
+- `🏁 delete` — the completed task line is **removed from the file entirely**
+  (not archived, not moved — deleted)
+
+For recurring tasks, `🏁 delete` prevents completed instances from accumulating:
+
+```markdown
+# Without 🏁 delete — completed copies pile up:
+- [x] Daily standup 🔁 every day 📅 2025-02-01 ✅ 2025-02-01
+- [ ] Daily standup 🔁 every day 📅 2025-02-02
+
+# With 🏁 delete — only the next occurrence remains:
+- [ ] Daily standup 🔁 every day 📅 2025-02-02 🏁 delete
+```
 
 ---
 
@@ -142,6 +165,7 @@ custom status characters. These are configured in Tasks settings.
 **Status types** determine behavior:
 - **TODO** — counts as "not done" in queries, toggles to next status
 - **IN_PROGRESS** — counts as "not done" but indicates active work
+- **ON_HOLD** — counts as "not done" but indicates deferred/paused work
 - **DONE** — counts as "done", adds completion date if auto-set is on
 - **CANCELLED** — counts as "done" (for filtering purposes), adds cancelled date
 - **NON_TASK** — not treated as a task at all
@@ -220,6 +244,9 @@ is recurring
 is not recurring
 is blocked                        Has unmet dependencies
 is not blocked                    All dependencies met
+is blocking                       Has an ID referenced by another task's ⛔,
+                                  and both have status TODO/IN_PROGRESS/ON_HOLD
+is not blocking                   Not blocking any other task
 ```
 
 **Combining filters:**
@@ -378,8 +405,9 @@ causes duplicate dates.
      `📅` to be ignored
    - `- [ ] Fix bug ⏫ 📅 2025-02-01` ✓ — priority then date, both parsed
    - Recommended order: description text → priority → recurrence → created
-     → start → scheduled → due → done/cancelled (but the key rule is: no
-     non-emoji text after the first emoji field)
+     → start → scheduled → due → done/cancelled → on completion → id →
+     depends on (but the key rule is: no non-emoji text after the first
+     emoji field)
 6. **Recurrence with custom statuses** — Completing a recurring task resets to
    the start of the status cycle, not the current status. A recurring `[/]`
    that's toggled to `[x]` creates a new `[ ]`, not a new `[/]`.
