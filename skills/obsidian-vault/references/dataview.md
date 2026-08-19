@@ -380,8 +380,6 @@ refresh cycle (configurable in Dataview settings, default 2.5 seconds).
    the field shares a line with other content.
 7. **Dates from filenames** — `file.day` only works if the filename is or
    contains a parseable date (e.g., `2025-01-15` or `2025-01-15 Meeting`).
-8. **Inline code spans starting with `=`** — Dataview treats any
-   backtick-enclosed text beginning with `=` as an inline query, even
-   ordinary code like `` `= 5` ``. The result is a parse error in the
-   rendered note. Write expressions with the operand first (`a === b`,
-   `x == null`) or use a fenced code block.
+8. **Inline code spans starting with `=`** — Dataview intercepts these as
+   inline queries, causing parse errors. See Inline DQL Queries → Gotcha
+   above for workarounds.

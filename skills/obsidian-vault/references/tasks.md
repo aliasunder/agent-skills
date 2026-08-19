@@ -130,8 +130,7 @@ The `🏁` emoji specifies what happens when a task is completed:
 - `🏁 delete` — the completed task line is **removed from the file entirely**
   (not archived, not moved — deleted)
 
-The power of `🏁 delete` is with recurring tasks. Without it, completed instances
-accumulate:
+For recurring tasks, `🏁 delete` prevents completed instances from accumulating:
 
 ```markdown
 # Without 🏁 delete — completed copies pile up:
