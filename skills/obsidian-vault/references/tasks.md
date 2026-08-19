@@ -242,6 +242,7 @@ is not recurring
 is blocked                        Has unmet dependencies
 is not blocked                    All dependencies met
 is blocking                       Has an ID that other tasks depend on
+is not blocking                   No other tasks depend on this one
 ```
 
 **Combining filters:**
@@ -400,8 +401,9 @@ causes duplicate dates.
      `📅` to be ignored
    - `- [ ] Fix bug ⏫ 📅 2025-02-01` ✓ — priority then date, both parsed
    - Recommended order: description text → priority → recurrence → created
-     → start → scheduled → due → done/cancelled (but the key rule is: no
-     non-emoji text after the first emoji field)
+     → start → scheduled → due → done/cancelled → on completion → id →
+     depends on (but the key rule is: no non-emoji text after the first
+     emoji field)
 6. **Recurrence with custom statuses** — Completing a recurring task resets to
    the start of the status cycle, not the current status. A recurring `[/]`
    that's toggled to `[x]` creates a new `[ ]`, not a new `[/]`.
