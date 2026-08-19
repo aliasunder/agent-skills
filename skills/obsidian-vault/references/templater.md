@@ -322,7 +322,7 @@ Key Templater settings that affect agent behavior:
 | Setting | Impact |
 |---|---|
 | `templates_folder` | Where template files live — do not create templates elsewhere |
-| `trigger_on_file_creation_mode` | Controls auto-template on file creation: `"none"`, `"folder"`, or `"regex"`. Stored in `templater-local-settings` (not `data.json`). `"folder"`/`"regex"` apply mapped templates only when post-frontmatter content is empty. Older vaults may use the V1 key `trigger_on_file_creation` (boolean) in `data.json` |
+| `trigger_on_file_creation_mode` | Controls auto-template on file creation: `"none"`, `"folder"`, or `"regex"`. V2 stores this in Obsidian's localStorage (not readable from the filesystem); `data.json` may still carry it for migration. `"folder"`/`"regex"` apply mapped templates only when post-frontmatter content is empty. Older vaults use the V1 key `trigger_on_file_creation` (boolean) in `data.json` |
 | `folder_templates` | Array of folder → template mappings (used when mode is `"folder"`) |
 | `enable_system_commands` | If false, `tp.system.exec()` won't work |
 | `syntax_highlighting` | Visual only — no functional impact |
@@ -348,9 +348,11 @@ Key Templater settings that affect agent behavior:
    - The race condition depends on timing: if Templater fires before the
      agent finishes writing, the result is unpredictable
    - **Before creating any file in a vault with Templater installed:** check
-     `.obsidian/plugins/templater-obsidian/` for `trigger_on_file_creation_mode`
-     in `templater-local-settings` (V2) or `trigger_on_file_creation` in
-     `data.json` (V1), and `folder_templates` mappings
+     `.obsidian/plugins/templater-obsidian/data.json` for
+     `trigger_on_file_creation_mode` (V2) or `trigger_on_file_creation` (V1),
+     and `folder_templates` mappings. If neither key is in `data.json`
+     (V2 stores the trigger in Obsidian localStorage), check whether
+     `folder_templates` has entries — if it does, assume the hazard is active
    - If the target folder has a mapping, either: (a) create the file and let
      the template handle initial content, then append/edit after; or (b) create
      the file in a different folder first, then move it
