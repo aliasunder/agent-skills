@@ -123,12 +123,24 @@ The `🏁` emoji specifies what happens when a task is completed:
 ```markdown
 - [ ] Leave me alone 🏁 keep
 - [ ] Delete me when done 🏁 delete
-- [ ] Delete completed instance, keep next recurrence 📅 2025-02-01 🔁 every day when done 🏁 delete
+- [ ] Delete completed instance, keep next recurrence 🔁 every day 📅 2025-02-01 🏁 delete
 ```
 
-- `🏁 keep` — default; completed task stays in place
-- `🏁 delete` — completed instance is removed (useful for recurring tasks
-  where you only want the next occurrence visible)
+- `🏁 keep` — default (same as no `🏁`); completed task stays in the note
+- `🏁 delete` — the completed task line is **removed from the file entirely**
+  (not archived, not moved — deleted)
+
+The power of `🏁 delete` is with recurring tasks. Without it, completed instances
+accumulate:
+
+```markdown
+# Without 🏁 delete — completed copies pile up:
+- [x] Daily standup 🔁 every day 📅 2025-02-01 ✅ 2025-02-01
+- [ ] Daily standup 🔁 every day 📅 2025-02-02
+
+# With 🏁 delete — only the next occurrence remains:
+- [ ] Daily standup 🔁 every day 📅 2025-02-02 🏁 delete
+```
 
 ---
 
