@@ -251,8 +251,25 @@ When programmatically editing a Kanban board file:
 
 ### Moving Cards Between Lanes
 
-To move a card from one lane to another, remove the list item from the source
-lane and add it to the target lane:
+**With vault-cortex MCP tools (preferred when available):**
+
+`vault_update_task` handles lane moves atomically — checkbox, done date,
+and heading move in one call:
+
+```
+vault_update_task({ path: "TASKS.md", block_id: "my-task", status: "done" })
+```
+
+On a Kanban board, `status: "done"` auto-detects the done lane and moves the
+card there. For a non-done lane move, use the `heading` param:
+
+```
+vault_update_task({ path: "TASKS.md", block_id: "my-task", heading: "Up Next" })
+```
+
+**With direct file ops (when vault-cortex is unavailable):**
+
+Remove the list item from the source lane and add it to the target lane:
 
 **Before:**
 ```markdown
@@ -312,19 +329,20 @@ Meta Bind INPUT fields placed in a Kanban board file may not render correctly
 in the board view (the board renders its own UI, not standard markdown). Avoid
 placing Meta Bind syntax inside Kanban boards.
 
-### Agent Limitations for Column Moves
+### Agent Tools for Column Moves
 
-The Obsidian CLI can toggle a task checkbox (`obsidian task done path=
+**vault-cortex MCP** (`vault_update_task`) handles the full "move to lane +
+change checkbox + stamp date" sequence atomically — one call, no manual
+file editing. This is the preferred approach when vault-cortex tools are
+available. Use `vault_create_task` to add new cards to a specific lane.
+
+**Obsidian CLI** can toggle a task checkbox (`obsidian task done path=
 line=N`) and trigger Tasks plugin auto-dates, but it **cannot move a line
-between `##` sections** — that requires a direct file edit. This means:
+between `##` sections** — that requires a direct file edit or vault-cortex.
 
-- **Completing a task by moving it to a Done lane** requires an Edit tool
-  operation: remove the line from the source lane, add it under the target
-  lane heading, and change `[ ]` to `[x]` if appropriate
-- If the Tasks plugin's `setDoneDate` is enabled, the CLI toggle adds `✅`
-  automatically — but the card stays in its current lane
-- For full "move to Done + mark complete + add date", agents should do a
-  direct file edit with all three changes in one pass
+**Direct file ops** (when neither vault-cortex nor CLI is available):
+remove the line from the source lane, add it under the target lane heading,
+and change the checkbox — all three changes in one pass.
 
 ### New Note from Card
 

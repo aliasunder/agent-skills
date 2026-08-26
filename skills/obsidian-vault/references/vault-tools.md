@@ -90,6 +90,9 @@ which often require manual approval for each invocation.
 - **Search** — full-text (ranked by relevance), by tag, by property, by folder
 - **Edit** — heading-targeted patches (append, prepend, replace within a
   section) and find-and-replace
+- **Tasks** — create tasks with correct field ordering (`vault_create_task`),
+  update status/priority/dates/description/heading (`vault_update_task`),
+  and query across the vault with structured filters (`vault_list_tasks`)
 - **Graph** — backlink and outgoing-link discovery
 - **Properties** — read and update frontmatter properties
 - **Daily notes** — read today's daily note
@@ -133,7 +136,7 @@ searches — fall back to direct file ops for bulk operations.
 | Read a note | Direct file ops | Vault Cortex: `vault_read_note` (supports targeted read modes) |
 | Search vault | Grep | Vault Cortex: `vault_search` (ranked by relevance) |
 | Rename/move a note | Direct file ops (rename + Grep + Edit for links) | CLI `obsidian move` is a convenience, not a requirement |
-| Create/complete tasks with dates | Direct file ops (write emoji dates directly) | — |
+| Create/complete tasks with dates | Direct file ops (write emoji dates directly) | Vault Cortex: `vault_create_task` + `vault_update_task` (atomic lane moves, correct field ordering) |
 | Append to a heading | Direct file ops (find heading, insert after) | Vault Cortex: `vault_patch_note` |
 | Open note in Obsidian | CLI `obsidian open` | Requires Obsidian desktop running; or let the user open it |
 
