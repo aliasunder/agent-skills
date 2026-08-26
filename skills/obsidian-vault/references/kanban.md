@@ -251,19 +251,11 @@ When programmatically editing a Kanban board file:
 
 ### Moving Cards Between Lanes
 
-**With vault-cortex MCP tools (preferred when available):**
-
-`vault_update_task` handles lane moves atomically — checkbox, done date,
-and heading move in one call:
+When vault-cortex is available, `vault_update_task` handles the move
+atomically — see **Agent Tools for Column Moves** below. Examples:
 
 ```
 vault_update_task({ path: "TASKS.md", block_id: "my-task", status: "done" })
-```
-
-On a Kanban board, `status: "done"` auto-detects the done lane and moves the
-card there. For a non-done lane move, use the `heading` param:
-
-```
 vault_update_task({ path: "TASKS.md", block_id: "my-task", heading: "Up Next" })
 ```
 

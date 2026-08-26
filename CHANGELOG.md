@@ -1,6 +1,13 @@
 # Changelog
 
 
+## [Unreleased]
+
+### Documentation
+
+- **obsidian-vault:** Update task tool references for vault-cortex task CRUD (#14)
+
+
 ## [1.2.0] — 2026-08-19
 
 ### Documentation
