@@ -1,6 +1,20 @@
 # Changelog
 
 
+## [1.2.1] — 2026-08-28
+
+### Features
+
+- **obsidian-vault:** Update task tool references for vault-cortex task CRUD (#14)
+
+### Maintenance
+
+- Bump umm-actually to v0.3.13 (#16)
+- **deps:** Bump umm-actually to v0.3.12 (#15)
+- Add 30m job timeout to umm-review workflow (#13)
+- Bump umm-actually to v0.3.11 (#12)
+
+
 ## [1.2.0] — 2026-08-19
 
 ### Documentation
