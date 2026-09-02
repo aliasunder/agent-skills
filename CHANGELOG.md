@@ -1,6 +1,17 @@
 # Changelog
 
 
+## [1.2.2] — 2026-09-02
+
+### Documentation
+
+- **obsidian-vault:** Point the canvas rule at references/canvas.md (#18)
+
+### CI / Infrastructure
+
+- Bump umm-actually to v0.3.14 (#17)
+
+
 ## [1.2.1] — 2026-08-28
 
 ### Features
