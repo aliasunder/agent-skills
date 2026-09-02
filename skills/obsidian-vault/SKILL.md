@@ -703,7 +703,7 @@ vault and doesn't yet have an Obsidian-aware CLAUDE.md:
   directly and offer to find and update broken links via search. See
   `references/vault-tools.md` for the full tool decision matrix.
 - Treat `.canvas` files as plain text — use the Canvas JSON rules in
-  `references/core-plugins.md`
+  `references/canvas.md`
 - Add Templater syntax to non-template notes
 - Reformat an entire vault or batch-rename notes without explicit
   confirmation
