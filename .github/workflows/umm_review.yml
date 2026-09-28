@@ -89,7 +89,7 @@ jobs:
       # default unless the expression below supplies an explicit workflow default.
       # Inputs whose default is empty (fallback_model, max_findings) pass empty
       # when the var is unset — identical to omitting them.
-      - uses: aliasunder/umm-actually@375a07d5c22c7232b32f354d91f39058bc5adea5 # live check, do not merge
+      - uses: aliasunder/umm-actually@94c2bc1c87b5bdda4e40059c59dfc5116bc66278 # live check, do not merge
         env:
           LOG_LEVEL: debug
         with:
